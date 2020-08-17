@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MonoGame_Experiments
 {
-    abstract class Component
+    public abstract class Component
     {
         private GameObject _baseObject;
 

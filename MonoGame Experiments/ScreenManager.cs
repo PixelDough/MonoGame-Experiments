@@ -33,6 +33,10 @@ namespace MonoGame_Experiments
 
         public void Init(GraphicsDeviceManager graphicsDeviceManager, GameWindow window)
         {
+            graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
+            _game.IsFixedTimeStep = true;
+            _game.TargetElapsedTime = TimeSpan.FromSeconds(1f / 60);
+
             SpriteBatch = new SpriteBatch(graphicsDeviceManager.GraphicsDevice);
             RenderTarget = new RenderTarget2D(graphicsDeviceManager.GraphicsDevice, _width, _height);
             RenderScale = 4;
@@ -40,6 +44,8 @@ namespace MonoGame_Experiments
             Game.Graphics.HardwareModeSwitch = false;
 
             ResetWindowSizeToCurrentScale();
+
+            Game.Graphics.ApplyChanges();
 
             Initialized = true;
         }

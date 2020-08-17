@@ -30,4 +30,9 @@
   <ItemGroup>
     <Folder Include="Core\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Ogmo Project\Level1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

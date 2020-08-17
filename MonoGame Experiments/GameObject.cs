@@ -2,11 +2,12 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace MonoGame_Experiments
 {
-    class GameObject
+    public class GameObject
     {
         public int ID { get; set; }
         //public Transform _transform
