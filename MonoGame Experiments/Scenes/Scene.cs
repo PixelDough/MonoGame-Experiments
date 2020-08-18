@@ -9,7 +9,7 @@ namespace MonoGame_Experiments.Scenes
 {
     abstract class Scene
     {
-        public List<GameObject> gameObjects = new List<GameObject>();
+        public List<Entity> gameObjects = new List<Entity>();
 
         public Scene()
         {

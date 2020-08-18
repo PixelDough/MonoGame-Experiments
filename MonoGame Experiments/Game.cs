@@ -22,6 +22,9 @@ namespace MonoGame_Experiments
 
         private Scene _currentScene;
 
+        public static Camera2D Camera;
+        public static bool DebugMode = true;
+
         public Game()
         {
             Window.ClientSizeChanged += OnWindowResize;
@@ -29,6 +32,8 @@ namespace MonoGame_Experiments
             Content.RootDirectory = "Content";
             ContentHandler = new ContentHandler(Content.ServiceProvider, Content.RootDirectory);
             IsMouseVisible = true;
+
+            Camera = new Camera2D(320, 180);
         }
 
         protected override void Initialize()
@@ -51,12 +56,17 @@ namespace MonoGame_Experiments
 
             foreach (TilemapLayer layer in tilemap.layers)
             {
-                foreach(Tile tile in layer.GetTiles())
+                if (layer.tileset != null)
                 {
-                    GameObject tileObject = new GameObject();
-                    tileObject.AddComponent(tile);
+                    foreach (Tile tile in layer.GetTiles())
+                    {
+                        Entity tileObject = new Entity(tile.Position);
+                        tileObject.AddComponent(tile);
+                        Collider collider = new Collider(Vector2.Zero, tile.SpriteRectangle.Width, tile.SpriteRectangle.Height);
+                        tileObject.AddComponent(collider);
 
-                    _currentScene.gameObjects.Add(tileObject);
+                        _currentScene.gameObjects.Add(tileObject);
+                    }
                 }
             }
 
@@ -81,7 +91,7 @@ namespace MonoGame_Experiments
 
         protected override void Draw(GameTime gameTime)
         {
-            _screenManager.SpriteBatch.Begin(blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
+            _screenManager.SpriteBatch.Begin(transformMatrix: Camera.TransformationMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
             GraphicsDevice.SetRenderTarget(_screenManager.RenderTarget);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 

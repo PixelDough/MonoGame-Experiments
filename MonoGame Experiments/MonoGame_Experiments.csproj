@@ -32,7 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="Ogmo Project\Level1.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 </Project>

@@ -8,9 +8,9 @@ namespace MonoGame_Experiments
 {
     public abstract class Component
     {
-        private GameObject _baseObject;
+        protected Entity _baseObject;
 
-        public void Initialize(GameObject baseObject)
+        public void Initialize(Entity baseObject)
         {
             _baseObject = baseObject;
         }

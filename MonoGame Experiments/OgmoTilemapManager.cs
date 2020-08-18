@@ -68,11 +68,9 @@ namespace MonoGame_Experiments
         public int gridCellHeight { get; set; }
         public int gridCellsX { get; set; }
         public int gridCellsY { get; set; }
-        public string tileset { get; set; }
-        //[JsonPropertyName("tileset")]
-        //private string _tilesetTextureName { set { tilesetTexture = ContentHandler.Instance.Load<Texture2D>("Sprites/Tiles/" + value); } }
-        public List<List<int>> data2D { get; set; }
-        public int[][][] dataCoords2D { get; set; }
+        public string tileset { get; set; } = null;
+        public int[][] dataCoords { get; set; }
+        public string[] grid { get; set; }
         public int exportMode { get; set; }
         public int arrayMode { get; set; }
 
@@ -95,28 +93,27 @@ namespace MonoGame_Experiments
             // If we have not loaded the tiles yet...
             if (tiles == null || tiles.Count <= 0)
             {
-                int yPos = 0;
-                foreach (var row in dataCoords2D)
+                for (int i = 0; i < dataCoords.Length; i++)
                 {
-                    int xPos = 0;
-                    foreach (var coord in row)
+                    int[] tileData = dataCoords[i];
+                    if (tileData[0] != -1)
                     {
-                        if (coord[0] != -1)
-                        {
-                            Vector2 worldPos = new Vector2(xPos * gridCellWidth, yPos * gridCellHeight);
+                        int xPos = i % gridCellsX;
+                        int yPos = (int)MathF.Floor(i / gridCellsX);
 
-                            Rectangle spriteRectangle = new Rectangle();
-                            spriteRectangle.X = coord[0] * gridCellWidth;
-                            spriteRectangle.Y = coord[1] * gridCellHeight;
-                            spriteRectangle.Width = gridCellWidth;
-                            spriteRectangle.Height = gridCellHeight;
+                        Vector2 worldPos = new Vector2(xPos * gridCellWidth, yPos * gridCellHeight);
 
-                            Tile tile = new Tile(GetTexture2D(), worldPos, spriteRectangle);
-                            tiles.Add(tile);
-                        }
-                        xPos++;
+                        Rectangle spriteRectangle = new Rectangle();
+                        spriteRectangle.X = tileData[0] * gridCellWidth;
+                        spriteRectangle.Y = tileData[1] * gridCellHeight;
+                        spriteRectangle.Width = gridCellWidth;
+                        spriteRectangle.Height = gridCellHeight;
+
+                        Tile tile = new Tile(GetTexture2D(), worldPos, spriteRectangle);
+                        tile.TilemapLayer = this;
+                        tile.IdOnTilemap = i;
+                        tiles.Add(tile);
                     }
-                    yPos++;
                 }
 
                 this.tiles = tiles;

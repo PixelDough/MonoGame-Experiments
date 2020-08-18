@@ -7,33 +7,34 @@ using System.Text;
 
 namespace MonoGame_Experiments
 {
-    public class GameObject
+    public class Entity
     {
         public int ID { get; set; }
-        //public Transform _transform
-        //{
-        //    get; protected set;
-        //}
 
-        private List<GameObject> _children;
+        public Transform transform = new Transform(Vector2.Zero, 0f, Vector2.One);
+
+        private List<Entity> _children;
         private readonly List<Component> _components;
+        
 
-        public GameObject()
+        public Entity(Vector2 position)
         {
-            //_transform = new Transform();
-            _children = new List<GameObject>();
+            _children = new List<Entity>();
             _components = new List<Component>();
+            transform.Position = position;
         }
 
-        public void AddChild(GameObject child)
+        public void AddChild(Entity child)
         {
             _children.Add(child);
         }
 
-        public void AddComponent(Component component)
+        public Component AddComponent(Component component)
         {
             _components.Add(component);
             component.Initialize(this);
+
+            return component;
         }
 
         public void AddComponent(List<Component> components)
@@ -55,27 +56,47 @@ namespace MonoGame_Experiments
             _components.Remove(component);
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             foreach (var component in _components)
             {
                 component.Update(gameTime);
             }
-            foreach (GameObject child in _children)
+            foreach (Entity child in _children)
             {
                 child.Update(gameTime);
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             foreach (var component in _components)
             {
                 component.Draw(spriteBatch);
             }
-            foreach (GameObject child in _children)
+            foreach (Entity child in _children)
             {
                 child.Draw(spriteBatch);
+            }
+        }
+
+        public class Transform
+        {
+            private Vector2 _position;
+            public Vector2 Position
+            {
+                get { return Vector2.Round(_position); }
+                set { _position = Vector2.Round(value); }
+            }
+
+            public float Rotation = 0f;
+            public Vector2 Scale = Vector2.One;
+
+            public Transform(Vector2 position, float rotation, Vector2 scale)
+            {
+                Position = position;
+                Rotation = rotation;
+                Scale = scale;
             }
         }
 
