@@ -9,6 +9,10 @@ namespace MonoGame_Experiments
     public abstract class Component
     {
         protected Entity _baseObject;
+        public Entity.Transform Transform
+        {
+            get { return _baseObject.transform; }
+        }
 
         public void Initialize(Entity baseObject)
         {

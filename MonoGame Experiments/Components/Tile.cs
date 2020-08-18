@@ -8,7 +8,7 @@ using System.Text;
 
 namespace MonoGame_Experiments.Components
 {
-    public class Tile : Component
+    public class Tile : Solid
     {
         public Tilemap Tilemap;
         public TilemapLayer TilemapLayer;
@@ -23,12 +23,11 @@ namespace MonoGame_Experiments.Components
         private Rectangle _spriteRectangle;
         public Rectangle SpriteRectangle { get { return _spriteRectangle; } }
 
-        public Tile(Texture2D texture, Vector2 position, Rectangle spriteRectangle)
+        public Tile(Texture2D texture, Vector2 position, Rectangle spriteRectangle) : base()
         {
             _texture = texture;
             _position = position;
             _spriteRectangle = spriteRectangle;
-            //BoundingBox = new Collider(_position, spriteRectangle.Width, spriteRectangle.Height);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

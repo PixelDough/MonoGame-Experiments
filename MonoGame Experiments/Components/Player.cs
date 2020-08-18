@@ -8,12 +8,11 @@ using System.Text;
 
 namespace MonoGame_Experiments.Components
 {
-    public class Player : Component
+    public class Player : Actor
     {
-        public Collider Collider;
         private bool _initialized = false;
 
-        public Player()
+        public Player() : base()
         {
             
         }
@@ -29,6 +28,7 @@ namespace MonoGame_Experiments.Components
             {
                 if (Collider == null)
                     Collider = _baseObject.GetComponent<Collider>();
+                
             }
 
             Vector2 moveAmount = Vector2.Zero;
@@ -41,34 +41,9 @@ namespace MonoGame_Experiments.Components
             if (Input.IsKeyDown(Keys.Right))
                 moveAmount += Vector2.UnitX * 100f * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (Collider != null)
-            {
-                foreach (Collider otherCollider in Collider.Colliders)
-                {
-                    if (otherCollider == Collider) continue;
-                    if (Collider.CollisionCheck(otherCollider, moveAmount * Vector2.UnitY))
-                    {
-                        moveAmount.Y = 0;
-                    }
-                    
-                }
-            }
-            _baseObject.transform.Position += moveAmount * Vector2.UnitY;
-            Collider.Update(gameTime);
+            MoveX(moveAmount.X, null);
+            MoveY(moveAmount.Y, null);
 
-            if (Collider != null)
-            {
-                foreach (Collider otherCollider in Collider.Colliders)
-                {
-                    if (otherCollider == Collider) continue;
-                    if (Collider.CollisionCheck(otherCollider, moveAmount * Vector2.UnitX))
-                    {
-                        moveAmount.X = 0;
-                    }
-
-                }
-            }
-            _baseObject.transform.Position += moveAmount * Vector2.UnitX;
             Collider.Update(gameTime);
 
             // TODO: Fix case where there is no x or y axis collision, but movement goes into a solid.

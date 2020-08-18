@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame_Experiments.Components;
+using MonoGame_Experiments.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +13,7 @@ namespace MonoGame_Experiments
     {
         public Vector2 Position
         {
-            get { return _baseObject.transform.Position + _localPosition; }
+            get { return Vector2.Round(Transform.Position + _localPosition); }
             set { _position = Vector2.Round(value); }
         }
         private Vector2 _position = Vector2.Zero;
@@ -33,25 +35,25 @@ namespace MonoGame_Experiments
 
         public int Top
         {
-            get { return (int)_position.Y; }
+            get { return (int)Position.Y; }
             set { _position.Y = value; }
         }
 
         public int Bottom
         {
-            get { return (int)_position.Y + Height; }
+            get { return (int)Position.Y + Height; }
             set { _position.Y = value - Height; }
         }
 
         public int Left
         {
-            get { return (int)_position.X; }
+            get { return (int)Position.X; }
             set { _position.X = value; }
         }
 
         public int Right
         {
-            get { return (int)_position.X + Width; }
+            get { return (int)Position.X + Width; }
             set { _position.X = value - Width; }
         }
 
@@ -108,6 +110,24 @@ namespace MonoGame_Experiments
             {
                 return false;
             }
+        }
+
+        public bool CollideAt(List<IRigidbody> targets, Vector2 position)
+        {
+            Vector2 relativePos = position - Position;
+
+            foreach(IRigidbody rigidbody in targets)
+            {
+                if (this.Left + relativePos.X < rigidbody.Collider.Right
+                    && this.Right + relativePos.X > rigidbody.Collider.Left
+                    && this.Top + relativePos.Y < rigidbody.Collider.Bottom
+                    && this.Bottom + relativePos.Y > rigidbody.Collider.Top)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public override void Update(GameTime gameTime)
