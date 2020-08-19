@@ -33,13 +33,15 @@ namespace MonoGame_Experiments.Components
 
             Vector2 moveAmount = Vector2.Zero;
             if (Input.IsKeyDown(Keys.Up))
-                moveAmount -= Vector2.UnitY * 100f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                moveAmount -= Vector2.UnitY * 1;
             if (Input.IsKeyDown(Keys.Down))
-                moveAmount += Vector2.UnitY * 100f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                moveAmount += Vector2.UnitY * 1;
             if (Input.IsKeyDown(Keys.Left))
-                moveAmount -= Vector2.UnitX * 100f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                moveAmount -= Vector2.UnitX * 1;
             if (Input.IsKeyDown(Keys.Right))
-                moveAmount += Vector2.UnitX * 100f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                moveAmount += Vector2.UnitX * 1;
+
+            Transform.Rotation += MathHelper.ToRadians(1);
 
             MoveX(moveAmount.X, null);
             MoveY(moveAmount.Y, null);

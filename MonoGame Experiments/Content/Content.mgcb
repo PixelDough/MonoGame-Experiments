@@ -37,6 +37,18 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/Tiles/tileset1.png
 
+#begin Sprites/Tiles/Tileset8x8.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/Tiles/Tileset8x8.png
+
 #begin Sprites/Toast_die.png
 /importer:TextureImporter
 /processor:TextureProcessor

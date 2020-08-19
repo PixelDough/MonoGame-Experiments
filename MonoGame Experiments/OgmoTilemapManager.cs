@@ -27,7 +27,9 @@ namespace MonoGame_Experiments
                 string result = string.Empty;
                 result = streamReader.ReadToEnd();
                 Tilemap tilemap = JsonSerializer.Deserialize(result, typeof(Tilemap)) as Tilemap;
-
+                //Dictionary<string, object> dictionary = JsonSerializer.Deserialize< Dictionary<string, object>>(result);
+                
+                
                 //Debug.WriteLine(tilemap.layers[0].data2D[0][0]);
                 //Debug.WriteLine(tilemap.layers[0].tileset);
                 return tilemap;

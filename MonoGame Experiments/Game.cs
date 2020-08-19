@@ -23,7 +23,7 @@ namespace MonoGame_Experiments
         private Scene _currentScene;
 
         public static Camera2D Camera;
-        public static bool DebugMode = true;
+        public static bool DebugMode = false;
 
         public Game()
         {
