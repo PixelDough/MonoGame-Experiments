@@ -67,6 +67,11 @@ namespace MonoGame_Experiments
 
             _hasChanged = false;
         }
+
+        private void SetCenter(Vector2 position)
+        {
+            //Position = position - new Vector2(_transformationMatrix.)
+        }
         #endregion
 
         #region Properties
@@ -104,6 +109,8 @@ namespace MonoGame_Experiments
 
                 // Set the position value
                 _position = value;
+
+                _position = Vector2.Clamp(_position, Vector2.Zero, new Vector2(512 - Viewport.Width, 512 - Viewport.Height));
 
                 // Flag that a change has been made
                 _hasChanged = true;

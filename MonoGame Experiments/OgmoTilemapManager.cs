@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using MonoGame_Experiments.Components;
 using Microsoft.Xna.Framework;
+using System.Linq;
 
 namespace MonoGame_Experiments
 {
@@ -29,6 +30,16 @@ namespace MonoGame_Experiments
                 Tilemap tilemap = JsonSerializer.Deserialize(result, typeof(Tilemap)) as Tilemap;
                 //Dictionary<string, object> dictionary = JsonSerializer.Deserialize< Dictionary<string, object>>(result);
                 
+                //foreach(TilemapLayer layer in tilemap.layers)
+                //{
+                //    foreach (var entity in layer.entities ?? Enumerable.Empty<TilemapLayer.TilemapEntity>())
+                //    {
+                //        foreach (var val in entity.values ?? Enumerable.Empty<KeyValuePair<string, object>>())
+                //        {
+                //            Debug.WriteLine(val.Key + " : " + val.Value);
+                //        }
+                //    }
+                //}
                 
                 //Debug.WriteLine(tilemap.layers[0].data2D[0][0]);
                 //Debug.WriteLine(tilemap.layers[0].tileset);
@@ -73,8 +84,22 @@ namespace MonoGame_Experiments
         public string tileset { get; set; } = null;
         public int[][] dataCoords { get; set; }
         public string[] grid { get; set; }
+        public TilemapEntity[] entities { get; set; }
         public int exportMode { get; set; }
         public int arrayMode { get; set; }
+
+        public class TilemapEntity
+        {
+            public string name { get; set; }
+            public int id { get; set; }
+            public string _eid { get; set; }
+            public int x { get; set; }
+            public int y { get; set; }
+            public int originX { get; set; }
+            public int originY { get; set; }
+            public Vector2[] nodes { get; set; }
+            public Dictionary<string, object> values { get; set; }
+        }
 
         private Texture2D tilesetTexture;
         private List<Tile> tiles;

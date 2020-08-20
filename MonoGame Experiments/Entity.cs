@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace MonoGame_Experiments
@@ -15,6 +16,8 @@ namespace MonoGame_Experiments
 
         private List<Entity> _children;
         private readonly List<Component> _components;
+
+        private List<Component> _componentsToInitialize = new List<Component>();
         
 
         public Entity(Vector2 position)
@@ -32,7 +35,8 @@ namespace MonoGame_Experiments
         public Component AddComponent(Component component)
         {
             _components.Add(component);
-            component.Initialize(this);
+            //component.Initialize(this);
+            _componentsToInitialize.Add(component);
 
             return component;
         }
@@ -40,10 +44,12 @@ namespace MonoGame_Experiments
         public void AddComponent(List<Component> components)
         {
             _components.AddRange(components);
-            foreach (var component in components)
-            {
-                component.Initialize(this);
-            }
+            _componentsToInitialize.AddRange(components);
+            //foreach (var component in components)
+            //{
+            //    component.Initialize(this);
+                
+            //}
         }
 
         public TComponentType GetComponent<TComponentType>() where TComponentType : Component
@@ -56,6 +62,19 @@ namespace MonoGame_Experiments
             _components.Remove(component);
         }
 
+        public virtual void PreUpdate(GameTime gameTime)
+        {
+            foreach (var componentToInitialize in _componentsToInitialize.ToArray())
+            {
+                componentToInitialize.Initialize(this);
+                _componentsToInitialize.Remove(componentToInitialize);
+            }
+            foreach (Entity child in _children)
+            {
+                child.PreUpdate(gameTime);
+            }
+        }
+
         public virtual void Update(GameTime gameTime)
         {
             foreach (var component in _components)
@@ -65,6 +84,14 @@ namespace MonoGame_Experiments
             foreach (Entity child in _children)
             {
                 child.Update(gameTime);
+            }
+        }
+
+        public virtual void LateUpdate(GameTime gameTime)
+        {
+            foreach (Entity child in _children)
+            {
+                child.LateUpdate(gameTime);
             }
         }
 
@@ -80,13 +107,28 @@ namespace MonoGame_Experiments
             }
         }
 
+        public static void Destroy(Entity entity)
+        {
+            foreach(Component component in entity._components.ToArray())
+            {
+                component.OnDestroy();
+            }
+
+            // TODO: Write a scene manager class with ability to remove entities from the current scene.
+            Game._currentScene.gameObjects.Remove(entity);
+        }
+
         public class Transform
         {
             private Vector2 _position;
             public Vector2 Position
             {
                 get { return Vector2.Round(_position); }
-                set { _position = Vector2.Round(value); }
+                set 
+                { 
+                    _position = Vector2.Round(value);
+                    OnMoveEvent?.Invoke();
+                }
             }
 
             public float Rotation = 0f;
@@ -98,6 +140,8 @@ namespace MonoGame_Experiments
                 Rotation = rotation;
                 Scale = scale;
             }
+
+            public Action OnMoveEvent;
         }
 
     }

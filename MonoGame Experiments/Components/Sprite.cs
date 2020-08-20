@@ -13,7 +13,6 @@ namespace MonoGame_Experiments.Components
         private int _width;
         private int _height;
         private Vector2 _localPosition;
-        private Vector2 _position;
 
         public Sprite(Texture2D texture, int width, int height, Vector2 localPosition)
         {
@@ -25,13 +24,13 @@ namespace MonoGame_Experiments.Components
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, new Rectangle((int)_position.X, (int)_position.Y, _texture.Width, _texture.Height), null, Color.White, Transform.Rotation, new Vector2(_texture.Width / 2, _texture.Height / 2), SpriteEffects.None, 0f);
+            spriteBatch.Draw(_texture, new Rectangle((int)Transform.Position.X +  (int)_localPosition.X, (int)Transform.Position.Y + (int)_localPosition.Y, _width, _height), null, Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 0);
             
         }
-
+        
         public override void Update(GameTime gameTime)
         {
-            _position = _baseObject.transform.Position + _localPosition;
+            //_position = _baseObject.transform.Position + _localPosition;
         }
     }
 }

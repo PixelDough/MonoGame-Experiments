@@ -41,6 +41,12 @@ namespace MonoGame_Experiments
             RenderTarget = new RenderTarget2D(graphicsDeviceManager.GraphicsDevice, _width, _height);
             RenderScale = 4;
 
+            // I'm not sure why this is needed, but with this set to false (the default value), the window shrinks when dragged around
+            // the screen, on specific monitors.
+            window.AllowUserResizing = true;
+
+            window.IsBorderless = false;
+            
             Game.Graphics.HardwareModeSwitch = false;
 
             ResetWindowSizeToCurrentScale();
@@ -115,7 +121,7 @@ namespace MonoGame_Experiments
             Game.Graphics.ApplyChanges();
 
             //UpdateRenderRectangle(_game.Window);
-            
+
         }
     }
 }

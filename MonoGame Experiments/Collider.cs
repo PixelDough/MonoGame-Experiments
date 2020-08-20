@@ -11,6 +11,7 @@ namespace MonoGame_Experiments
 {
     public class Collider : Component
     {
+        public bool Collidable { get; set; } = true;
         public Vector2 Position
         {
             get { return Vector2.Round(Transform.Position + _localPosition); }
@@ -21,14 +22,16 @@ namespace MonoGame_Experiments
 
         public static List<Collider> Colliders = new List<Collider>();
 
+        public Color DebugColor = Color.Red;
+
         public int Width { get; set; }
         public int Height { get; set; }
 
         public Collider(Vector2 localPosition, int width, int height)
         {
-            _localPosition = localPosition;
             Width = width;
             Height = height;
+            _localPosition = localPosition;
 
             Colliders.Add(this);
         }
@@ -57,6 +60,16 @@ namespace MonoGame_Experiments
             set { _position.X = value - Width; }
         }
 
+        public Vector2 BottomCenter
+        {
+            get { return new Vector2(Width / 2, Bottom); }
+            set
+            {
+                _localPosition.X = MathF.Round(value.X - Width / 2);
+                _localPosition.Y = MathF.Round(value.Y - Height);
+            }
+        }
+
         public Rectangle Bounds
         {
             get
@@ -65,12 +78,18 @@ namespace MonoGame_Experiments
             }
         }
 
+        private static Dictionary<string, Texture2D> _rectangleTextures = new Dictionary<string, Texture2D>();
         private Texture2D _rectangleTexture;
         public Texture2D RectangleTexture
         {
             get
             {
-                if (_rectangleTexture == null)
+                string sizeKey = string.Concat(Width, "x", Height);
+                if (_rectangleTextures.ContainsKey(sizeKey))
+                {
+                    _rectangleTexture = _rectangleTextures[sizeKey];
+                }
+                else
                 {
                     List<Color> colors = new List<Color>();
                     for (int y = 0; y < Height; y++)
@@ -89,7 +108,9 @@ namespace MonoGame_Experiments
                     }
                     _rectangleTexture = new Texture2D(Game.Graphics.GraphicsDevice, Width, Height);
                     _rectangleTexture.SetData(colors.ToArray());
+                    _rectangleTextures.Add(sizeKey, _rectangleTexture);
                 }
+
                 return _rectangleTexture;
             }
         }
@@ -114,10 +135,19 @@ namespace MonoGame_Experiments
 
         public bool CollideAt(List<IRigidbody> targets, Vector2 position)
         {
+            //float dist = Vector2.Distance(Position, position);
             Vector2 relativePos = position - Position;
-
+            float myDiagLengthSquared = (Width * Width) + (Height * Height);
             foreach(IRigidbody rigidbody in targets)
             {
+                // I am stupid and forgot to put this in. No wonder my moving solids were preventing the actors from moving when being pushed!
+                if (!rigidbody.Collider.Collidable) { continue; }
+
+                float diagLengthSquared = (float)Math.Pow(rigidbody.Collider.Width, 2) + (float)Math.Pow(rigidbody.Collider.Height, 2);
+                float dist = Vector2.DistanceSquared(position, rigidbody.Collider.Position);
+                if (dist > myDiagLengthSquared + diagLengthSquared)
+                    continue;
+
                 if (this.Left + relativePos.X < rigidbody.Collider.Right
                     && this.Right + relativePos.X > rigidbody.Collider.Left
                     && this.Top + relativePos.Y < rigidbody.Collider.Bottom
@@ -130,15 +160,20 @@ namespace MonoGame_Experiments
             return false;
         }
 
+        public void RefreshPositionToTransform()
+        {
+            Position = _entity.transform.Position + _localPosition;
+        }
+
         public override void Update(GameTime gameTime)
         {
-            Position = _baseObject.transform.Position + _localPosition;
+            RefreshPositionToTransform();
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (Game.DebugMode)
-                spriteBatch.Draw(RectangleTexture, Position, Color.Multiply(Color.Red, 0.75f));
+                spriteBatch.Draw(RectangleTexture, Position, Color.Multiply(DebugColor, 1f));
         }
     }
 }

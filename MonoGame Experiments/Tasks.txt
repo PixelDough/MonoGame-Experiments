@@ -1,0 +1,3 @@
+﻿
+- "Blob" autotile based on a tileset.
+- Create method for sprites and colliders to easily be created and kept at different origin points on an Entity.

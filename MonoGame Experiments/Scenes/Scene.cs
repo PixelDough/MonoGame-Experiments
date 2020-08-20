@@ -7,7 +7,7 @@ using System.Text;
 
 namespace MonoGame_Experiments.Scenes
 {
-    abstract class Scene
+    public abstract class Scene
     {
         public List<Entity> gameObjects = new List<Entity>();
 

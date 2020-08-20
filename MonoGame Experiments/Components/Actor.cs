@@ -11,12 +11,32 @@ namespace MonoGame_Experiments.Components
     // Classes that extend the Actor class keep track of those things.
     public class Actor : Component, IRigidbody
     {
-        public Collider Collider { get; set; }
+        private Collider _collider;
+        public Collider Collider {
+            get
+            {
+                if (_collider != null) return _collider;
+                else
+                {
+                    _collider = _entity.GetComponent<Collider>();
+                    return _collider;
+                }
+            }
+        }
         public static List<IRigidbody> Actors = new List<IRigidbody>();
+
+        private float _velocityCap = 10f;
 
         public Actor()
         {
             Actors.Add(this);
+        }
+
+        public override void Initialize(Entity baseObject)
+        {
+            base.Initialize(baseObject);
+
+            Collider.DebugColor = Color.LawnGreen;
         }
 
         public override void Update(GameTime gameTime)
@@ -29,11 +49,13 @@ namespace MonoGame_Experiments.Components
             
         }
 
-        public void MoveX(float amount, Action onCollide)
+        public bool MoveX(float amount, Action onCollide)
         {
+            amount = Math.Clamp(amount, -_velocityCap, _velocityCap);
             float xRemainder = amount;
             int move = (int)Math.Round(xRemainder);
 
+            Collider.RefreshPositionToTransform();
             if (move != 0)
             {
                 xRemainder -= move;
@@ -45,23 +67,28 @@ namespace MonoGame_Experiments.Components
                     {
                         // No solid immediately beside us
                         Transform.Position += Vector2.UnitX * sign;
+                        Collider.RefreshPositionToTransform();
                         move -= sign;
                     }
                     else
                     {
                         // Hit a solid!
                         onCollide?.Invoke();
-                        break;
+                        return true;
                     }
                 }
             }
+
+            return false;
         }
 
-        public void MoveY(float amount, Action onCollide)
+        public bool MoveY(float amount, Action onCollide)
         {
+            amount = Math.Clamp(amount, -_velocityCap, _velocityCap);
             float yRemainder = amount;
             int move = (int)Math.Round(yRemainder);
 
+            Collider.RefreshPositionToTransform();
             if (move != 0)
             {
                 yRemainder -= move;
@@ -73,16 +100,34 @@ namespace MonoGame_Experiments.Components
                     {
                         // No solid immediately beside us
                         Transform.Position += Vector2.UnitY * sign;
+                        Collider.RefreshPositionToTransform();
                         move -= sign;
                     }
                     else
                     {
                         // Hit a solid!
                         onCollide?.Invoke();
-                        break;
+                        return true;
                     }
                 }
             }
+
+            return false;
         }
+
+        public virtual bool IsRiding(Solid solid)
+        {
+            if (Collider.CollisionCheck(solid.Collider, new Vector2(0, 1)))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public virtual void Squish()
+        {
+
+        }
+
     }
 }

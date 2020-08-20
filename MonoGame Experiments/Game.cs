@@ -6,6 +6,7 @@ using MonoGame_Experiments.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -20,7 +21,8 @@ namespace MonoGame_Experiments
 
         private ScreenManager _screenManager;
 
-        private Scene _currentScene;
+        // CHANGE LATER
+        public static Scene _currentScene;
 
         public static Camera2D Camera;
         public static bool DebugMode = false;
@@ -32,7 +34,7 @@ namespace MonoGame_Experiments
             Content.RootDirectory = "Content";
             ContentHandler = new ContentHandler(Content.ServiceProvider, Content.RootDirectory);
             IsMouseVisible = true;
-
+            
             Camera = new Camera2D(320, 180);
         }
 
@@ -52,29 +54,13 @@ namespace MonoGame_Experiments
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Tilemap tilemap = OgmoTilemapManager.LoadLevelData("Ogmo Project/Level1.json");
-
-            foreach (TilemapLayer layer in tilemap.layers)
-            {
-                if (layer.tileset != null)
-                {
-                    foreach (Tile tile in layer.GetTiles())
-                    {
-                        Entity tileObject = new Entity(tile.Position);
-                        tileObject.AddComponent(tile);
-                        Collider collider = new Collider(Vector2.Zero, tile.SpriteRectangle.Width, tile.SpriteRectangle.Height);
-                        tileObject.AddComponent(collider);
-
-                        _currentScene.gameObjects.Add(tileObject);
-                    }
-                }
-            }
+            
 
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             Input.Update(gameTime);
@@ -82,6 +68,10 @@ namespace MonoGame_Experiments
             if (Input.IsKeyPressed(Keys.F11))
             {
                 _screenManager.ToggleFullScreen();
+            }
+            if (Input.IsKeyPressed(Keys.F4) || (Input.IsInputDown(buttons: new List<Buttons>() { Buttons.Back }) && Input.IsInputPressed(buttons: new List<Buttons>() { Buttons.Y })))
+            {
+                DebugMode = !DebugMode;
             }
 
             _currentScene.Update(gameTime);
@@ -115,6 +105,8 @@ namespace MonoGame_Experiments
 
         private void OnWindowResize(object sender, EventArgs e)
         {
+            if (_screenManager == null) { return; }
+
             _screenManager.UpdateRenderRectangle(Window);
             //_screenManager.UpdateRenderRectangle(Window);
         }
