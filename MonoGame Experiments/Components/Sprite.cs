@@ -14,6 +14,8 @@ namespace MonoGame_Experiments.Components
         private int _height;
         private Vector2 _localPosition;
 
+        public bool FlipX = false;
+
         public Sprite(Texture2D texture, int width, int height, Vector2 localPosition)
         {
             _texture = texture;
@@ -24,7 +26,7 @@ namespace MonoGame_Experiments.Components
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, new Rectangle((int)Transform.Position.X +  (int)_localPosition.X, (int)Transform.Position.Y + (int)_localPosition.Y, _width, _height), null, Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 0);
+            spriteBatch.Draw(_texture, new Rectangle((int)Transform.Position.X +  (int)_localPosition.X, (int)Transform.Position.Y + (int)_localPosition.Y, _width, _height), null, Color.White, 0, new Vector2(0, 0), FlipX ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             
         }
         

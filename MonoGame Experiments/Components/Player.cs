@@ -14,6 +14,8 @@ namespace MonoGame_Experiments.Components
         private Vector2 _positionCheck = Vector2.Zero;
         private Vector2 _positionLast = Vector2.Zero;
 
+        private Sprite _sprite;
+
         public Player() : base()
         {
 
@@ -35,6 +37,8 @@ namespace MonoGame_Experiments.Components
 
         public override void Update(GameTime gameTime)
         {
+            if (_sprite == null) _sprite = _entity.GetComponent<Sprite>();
+
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
 
             _positionLast = _positionCheck;
@@ -42,9 +46,15 @@ namespace MonoGame_Experiments.Components
 
             float moveAmountX = 0;
             if (Input.IsInputDown(new List<Keys> { Keys.Left, Keys.A }, new List<Buttons> { Buttons.DPadLeft, Buttons.LeftThumbstickLeft }))
+            {
                 moveAmountX -= 2;
+                _sprite.FlipX = true;
+            }
             if (Input.IsInputDown(new List<Keys> { Keys.Right, Keys.D }, new List<Buttons> { Buttons.DPadRight, Buttons.LeftThumbstickRight }))
+            {
                 moveAmountX += 2;
+                _sprite.FlipX = false;
+            }
 
             _velocity.X = MathHelper.Lerp(_velocity.X, moveAmountX, 0.2f);
 
@@ -53,6 +63,13 @@ namespace MonoGame_Experiments.Components
             if (Input.IsInputPressed(new List<Keys> { Keys.Space }, new List<Buttons> { Buttons.A } ))
                 _velocity.Y = -4 + ((_positionCheck - _positionLast).Y / 1.5f);
 
+            if (Input.IsInputReleased(new List<Keys> { Keys.Space }, new List<Buttons> { Buttons.A }))
+            {
+                if (_velocity.Y < -1) _velocity.Y /= 3;
+            }
+
+            bool zoomCam = Input.IsInputDown(new List<Keys>() { Keys.E }, new List<Buttons>() { Buttons.LeftTrigger });
+            //Game.Camera.Zoom = MathHelper.Lerp(Game.Camera.Zoom, zoomCam ? 2 : 1, 0.1f);
 
 
             Transform.Rotation += MathHelper.ToRadians(1);
@@ -71,7 +88,7 @@ namespace MonoGame_Experiments.Components
 
         public void UpdateFollowCameraPosition()
         {
-            Game.Camera.Position = _entity.transform.Position - new Vector2(Game.Camera.Viewport.Width / 2, Game.Camera.Viewport.Height / 2);
+            Game.Camera.SetCenter(_entity.transform.Position);
         }
 
         public override void Squish()

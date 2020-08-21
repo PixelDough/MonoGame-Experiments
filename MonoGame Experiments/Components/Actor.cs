@@ -129,5 +129,12 @@ namespace MonoGame_Experiments.Components
 
         }
 
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            Actors.Remove(this);
+        }
+
     }
 }

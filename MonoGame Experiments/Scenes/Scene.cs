@@ -10,6 +10,7 @@ namespace MonoGame_Experiments.Scenes
     public abstract class Scene
     {
         public List<Entity> gameObjects = new List<Entity>();
+        public List<Entity> EntitiesToDestroy = new List<Entity>();
 
         public Scene()
         {

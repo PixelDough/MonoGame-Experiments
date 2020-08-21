@@ -168,5 +168,12 @@ namespace MonoGame_Experiments.Components
             }
         }
 
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            Solids.Remove(this);
+        }
+
     }
 }

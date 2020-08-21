@@ -13,7 +13,7 @@ namespace MonoGame_Experiments
         private Matrix _inverseMatrix = Matrix.Identity;
         private Vector2 _position = Vector2.Zero;
         private float _rotation = 0;
-        private Vector2 _zoom = Vector2.One;
+        private float _zoom = 1;
         private Vector2 _origin = Vector2.Zero;
         private bool _hasChanged;
 
@@ -49,8 +49,8 @@ namespace MonoGame_Experiments
 
             var scaleMatrix = Matrix.CreateScale(new Vector3()
             {
-                X = _zoom.X,
-                Y = _zoom.Y,
+                X = _zoom,
+                Y = _zoom,
                 Z = 1
             });
 
@@ -68,9 +68,9 @@ namespace MonoGame_Experiments
             _hasChanged = false;
         }
 
-        private void SetCenter(Vector2 position)
+        public void SetCenter(Vector2 position)
         {
-            //Position = position - new Vector2(_transformationMatrix.)
+            Position = position - new Vector2(Viewport.Width / 2 / Zoom, Viewport.Height / 2 / Zoom);
         }
         #endregion
 
@@ -110,7 +110,7 @@ namespace MonoGame_Experiments
                 // Set the position value
                 _position = value;
 
-                _position = Vector2.Clamp(_position, Vector2.Zero, new Vector2(512 - Viewport.Width, 512 - Viewport.Height));
+                _position = Vector2.Clamp(_position, Vector2.Zero, new Vector2(512 - Viewport.Width / Zoom, 512 - Viewport.Height / Zoom));
 
                 // Flag that a change has been made
                 _hasChanged = true;
@@ -133,7 +133,7 @@ namespace MonoGame_Experiments
             }
         }
 
-        public Vector2 Zoom
+        public float Zoom
         {
             get { return _zoom; }
             set

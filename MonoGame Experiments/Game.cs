@@ -97,6 +97,11 @@ namespace MonoGame_Experiments
 
         private void DrawRenderTargetToScreen()
         {
+            //Rectangle partRectangle = new Rectangle();
+            //partRectangle.X = Camera.Viewport.Width - (int)MathF.Round(Camera.Viewport.Width / Camera.Zoom);
+            //partRectangle.Y = Camera.Viewport.Height - (int)MathF.Round(Camera.Viewport.Height / Camera.Zoom);
+            //partRectangle.Width = (int)MathF.Round(Camera.Viewport.Width / Camera.Zoom);
+            //partRectangle.Height = (int)MathF.Round(Camera.Viewport.Height / Camera.Zoom);
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             GraphicsDevice.SetRenderTarget(null);
             _spriteBatch.Draw(_screenManager.RenderTarget, _screenManager.RenderRectangle, Color.White);

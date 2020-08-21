@@ -8237,7 +8237,7 @@
       "gridCellsX": 64,
       "gridCellsY": 64,
       "entities": [
-        {"name": "player", "id": 9, "_eid": "69499072", "x": 96, "y": 416, "originX": 8, "originY": 16},
+        {"name": "player", "id": 9, "_eid": "69499072", "x": 96, "y": 424, "originX": 8, "originY": 16},
         {
           "name": "movingPlatform",
           "id": 10,

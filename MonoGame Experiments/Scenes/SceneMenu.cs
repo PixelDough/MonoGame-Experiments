@@ -60,6 +60,9 @@ namespace MonoGame_Experiments.Scenes
                 gameObject.PreUpdate(gameTime);
             foreach (Entity gameObject in gameObjects.ToArray())
                 gameObject.Update(gameTime);
+
+            foreach (Entity gameObject in gameObjects.ToArray())
+                gameObject.LateUpdate(gameTime);
             
             
         }

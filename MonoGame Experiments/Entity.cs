@@ -18,7 +18,7 @@ namespace MonoGame_Experiments
         private readonly List<Component> _components;
 
         private List<Component> _componentsToInitialize = new List<Component>();
-        
+        private bool _destroyed = false;
 
         public Entity(Vector2 position)
         {
@@ -89,6 +89,17 @@ namespace MonoGame_Experiments
 
         public virtual void LateUpdate(GameTime gameTime)
         {
+            if (_destroyed)
+            {
+                foreach (Component component in _components.ToArray())
+                {
+                    component.OnDestroy();
+                }
+
+                // TODO: Write a scene manager class with ability to remove entities from the current scene.
+                Game._currentScene.gameObjects.Remove(this);
+            }
+
             foreach (Entity child in _children)
             {
                 child.LateUpdate(gameTime);
@@ -109,13 +120,7 @@ namespace MonoGame_Experiments
 
         public static void Destroy(Entity entity)
         {
-            foreach(Component component in entity._components.ToArray())
-            {
-                component.OnDestroy();
-            }
-
-            // TODO: Write a scene manager class with ability to remove entities from the current scene.
-            Game._currentScene.gameObjects.Remove(entity);
+            entity._destroyed = true;
         }
 
         public class Transform
