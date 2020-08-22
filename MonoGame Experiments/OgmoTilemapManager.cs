@@ -107,7 +107,7 @@ namespace MonoGame_Experiments
             bool br = false;
 
             // TODO: Add ability for some tilemap layers to NOT require autotiling. 
-            // Ideas: Maybe have a bool property in each tilemap layer like "useAutotile".
+            // Ideas: Maybe have a bool property in each tilemap layer like "useAutotile" (ogmo doesn't allow this. Tiled DOES. Noted...).
             // If that idea doesn't work, add "auto_" to the start of the layer or tilemap name, and look for that before parsing the tilemap data.
 
             // TODO: Extract parts of this into a function with out parameters maybe.
@@ -115,30 +115,14 @@ namespace MonoGame_Experiments
             // Would be easier to do this if I was using 2D array tile levels, but alas... Speaking of which...
             // TODO: Implement 2D array tilemaps, because they're basically just better overall for everything for the most part.
 
-            if (tileID - layer.gridCellsX >= 0)
-                if (layer.dataCoords[tileID - layer.gridCellsX][0] != -1)
-                    t = true;
-            if (tileID - layer.gridCellsX + 1 >= 0)
-                if (layer.dataCoords[tileID - layer.gridCellsX + 1][0] != -1)
-                    tr = true;
-            if (tileID + 1 < layer.dataCoords.Length)
-                if (layer.dataCoords[tileID + 1][0] != -1)
-                    r = true;
-            if (tileID + layer.gridCellsX + 1 < layer.dataCoords.Length)
-                if (layer.dataCoords[tileID + layer.gridCellsX + 1][0] != -1)
-                    br = true;
-            if (tileID + layer.gridCellsX < layer.dataCoords.Length)
-                if (layer.dataCoords[tileID + layer.gridCellsX][0] != -1)
-                    b = true;
-            if (tileID + layer.gridCellsX - 1 < layer.dataCoords.Length)
-                if (layer.dataCoords[tileID + layer.gridCellsX - 1][0] != -1)
-                    bl = true;
-            if (tileID - 1 >= 0)
-                if (layer.dataCoords[tileID - 1][0] != -1)
-                    l = true;
-            if (tileID - layer.gridCellsX - 1 >= 0)
-                if (layer.dataCoords[tileID - layer.gridCellsX - 1][0] != -1)
-                    tl = true;
+            CheckTilePosition(layer, tileID, -layer.gridCellsX, out t);
+            CheckTilePosition(layer, tileID, -layer.gridCellsX + 1, out tr);
+            CheckTilePosition(layer, tileID, +1, out r);
+            CheckTilePosition(layer, tileID, +layer.gridCellsX + 1, out br);
+            CheckTilePosition(layer, tileID, +layer.gridCellsX, out b);
+            CheckTilePosition(layer, tileID, +layer.gridCellsX - 1, out bl);
+            CheckTilePosition(layer, tileID, -1, out l);
+            CheckTilePosition(layer, tileID, -layer.gridCellsX - 1, out tl);
 
             if (t)
                 bitwiseIndex += 1;
@@ -158,6 +142,21 @@ namespace MonoGame_Experiments
                 bitwiseIndex += 128;
 
             return bitwiseIndex;
+        }
+
+        private static void CheckTilePosition(TilemapLayer tilemapLayer, int thisTileID, int tileCheckAmount, out bool result)
+        {
+            result = false;
+            int tileCheckID = thisTileID + tileCheckAmount;
+            if (MathF.Floor((thisTileID + Math.Sign(tileCheckAmount)) / tilemapLayer.gridCellsX) != MathF.Floor(thisTileID / tilemapLayer.gridCellsX) || 
+                thisTileID + tileCheckAmount < 0 || 
+                thisTileID + tileCheckAmount > tilemapLayer.dataCoords.Length - 1)
+                result = true;
+            else
+            {
+                if (tilemapLayer.dataCoords[tileCheckID][0] != -1)
+                    result = true;
+            }
         }
 
         public static Vector2 GetPositionOnBlobTilemap(int bitwiseIndex, int tileWidth = 1, int tileHeight = 1)

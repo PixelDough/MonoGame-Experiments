@@ -33,8 +33,7 @@ namespace MonoGame_Experiments.Components
         {
             return false;
         }
-
-        public bool MoveY(float amount, Action onCollide)
+        public bool MoveY(float amount, Action onCollide, int jumpCornerCorrectionAmount = 0)
         {
             return false;
         }
@@ -174,6 +173,5 @@ namespace MonoGame_Experiments.Components
 
             Solids.Remove(this);
         }
-
     }
 }

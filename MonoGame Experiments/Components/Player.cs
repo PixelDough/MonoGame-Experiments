@@ -75,7 +75,7 @@ namespace MonoGame_Experiments.Components
 
             Transform.Rotation += MathHelper.ToRadians(1);
 
-            MoveY(_velocity.Y, OnCollideY);
+            MoveY(_velocity.Y, OnCollideY, 4);
             Collider.Update(gameTime);
             MoveX(_velocity.X, OnCollideX);
             Collider.Update(gameTime);

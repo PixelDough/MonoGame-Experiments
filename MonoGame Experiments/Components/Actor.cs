@@ -82,7 +82,7 @@ namespace MonoGame_Experiments.Components
             return false;
         }
 
-        public bool MoveY(float amount, Action onCollide)
+        public bool MoveY(float amount, Action onCollide, int jumpCornerCorrectionAmount = 0)
         {
             amount = Math.Clamp(amount, -_velocityCap, _velocityCap);
             float yRemainder = amount;
@@ -105,13 +105,40 @@ namespace MonoGame_Experiments.Components
                     }
                     else
                     {
-                        // Hit a solid!
-                        onCollide?.Invoke();
-                        return true;
+                        // This could potentially be refactored. Right now it seems like an odd way of doing it. But it works :)
+                        bool hitCornerJump = false;
+                        if (jumpCornerCorrectionAmount != 0 && sign < 0)
+                        {
+                            hitCornerJump = JumpCornerCorrection(jumpCornerCorrectionAmount);
+                        }
+                        
+                        if (!hitCornerJump)
+                        {
+                            // Hit a solid!
+                            onCollide?.Invoke();
+                            return true;
+                        }
                     }
                 }
             }
 
+            return false;
+        }
+
+        private bool JumpCornerCorrection(int jumpCornerCorrectionAmount)
+        {
+            for (int i = 1; i <= jumpCornerCorrectionAmount; i++)
+            {
+                for (int j = 1; j >= -1; j -= 2)
+                {
+                    if (!Collider.CollideAt(Solid.Solids, Collider.Position + new Vector2(i * j, -1)))
+                    {
+                        Transform.Position += Vector2.UnitX * (i * j);
+                        Collider.RefreshPositionToTransform();
+                        return true;
+                    }
+                }
+            }
             return false;
         }
 

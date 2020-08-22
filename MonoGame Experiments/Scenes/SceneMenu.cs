@@ -45,11 +45,11 @@ namespace MonoGame_Experiments.Scenes
 
             gameObjects.Add(object1);
 
-            //Entity movingBlock = new Entity(new Vector2(64, 256 + 48));
-            //movingBlock.AddComponent(new MovingBlock());
-            //movingBlock.AddComponent(new Sprite(ContentHandler.Instance.Load<Texture2D>("Sprites/Pixel"), 24, 8, Vector2.Zero));
-            //movingBlock.AddComponent(new Collider(new Vector2(0, 0), 24, 8));
-            //gameObjects.Add(movingBlock);
+            Entity movingBlock = new Entity(new Vector2(64, 256 + 48));
+            movingBlock.AddComponent(new MovingBlock());
+            movingBlock.AddComponent(new Sprite(ContentHandler.Instance.Load<Texture2D>("Sprites/Pixel"), 24, 8, Vector2.Zero));
+            movingBlock.AddComponent(new Collider(new Vector2(0, 0), 24, 8));
+            gameObjects.Add(movingBlock);
         }
 
         public override void Update(GameTime gameTime)
