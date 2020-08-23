@@ -127,6 +127,12 @@ namespace MonoGame_Experiments
             _spriteBatch.End();
         }
 
+        float InverseLerp(float min, float max, float value)
+        {
+            if (MathF.Abs(max - min) < float.Epsilon) return min;
+            return (value - min) / (max - min);
+        }
+
         private void OnWindowResize(object sender, EventArgs e)
         {
             if (_screenManager == null) { return; }

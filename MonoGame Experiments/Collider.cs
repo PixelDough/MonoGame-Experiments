@@ -60,6 +60,11 @@ namespace MonoGame_Experiments
             set { _position.X = value - Width; }
         }
 
+        public Vector2 Center
+        {
+            get { return new Vector2(Position.X + Width / 2, Position.Y + Height / 2); }
+        }
+
         public Vector2 BottomCenter
         {
             get { return new Vector2(Width / 2, Bottom); }
@@ -137,16 +142,10 @@ namespace MonoGame_Experiments
         {
             //float dist = Vector2.Distance(Position, position);
             Vector2 relativePos = position - Position;
-            float myDiagLengthSquared = (Width * Width) + (Height * Height);
             foreach(IRigidbody rigidbody in targets)
             {
                 // I am stupid and forgot to put this in. No wonder my moving solids were preventing the actors from moving when being pushed!
                 if (!rigidbody.Collider.Collidable) { continue; }
-
-                float diagLengthSquared = (float)Math.Pow(rigidbody.Collider.Width, 2) + (float)Math.Pow(rigidbody.Collider.Height, 2);
-                float dist = Vector2.DistanceSquared(position, rigidbody.Collider.Position);
-                if (dist > myDiagLengthSquared + diagLengthSquared)
-                    continue;
 
                 if (this.Left + relativePos.X < rigidbody.Collider.Right
                     && this.Right + relativePos.X > rigidbody.Collider.Left
@@ -172,8 +171,9 @@ namespace MonoGame_Experiments
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+
             if (Game.DebugMode)
-                spriteBatch.Draw(RectangleTexture, Position, null, Color.Multiply(DebugColor, 1f), 0f, Vector2.Zero, 1, SpriteEffects.None, 1f);
+                spriteBatch.Draw(RectangleTexture, Position, null, DebugColor, 0f, Vector2.Zero, 1, SpriteEffects.None, 1f);
         }
     }
 }

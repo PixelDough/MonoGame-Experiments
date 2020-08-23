@@ -37,7 +37,7 @@ namespace MonoGame_Experiments.Components
 
         public override void Update(GameTime gameTime)
         {
-            
+            base.Update(gameTime);
         }
     }
 }

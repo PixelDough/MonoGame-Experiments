@@ -13,6 +13,7 @@ namespace MonoGame_Experiments.Components
 
         public Collider Collider { get { return _entity.GetComponent<Collider>(); } }
         public static List<IRigidbody> Solids = new List<IRigidbody>();
+        private bool _active = false;
 
         public Solid()
         {
@@ -21,7 +22,30 @@ namespace MonoGame_Experiments.Components
 
         public override void Update(GameTime gameTime)
         {
+            float myDiagLengthSquared = (Collider.Width * Collider.Width) + (Collider.Height * Collider.Height);
 
+            _active = false;
+            foreach (Actor actor in Actor.Actors)
+            {
+                float diagLengthSquared = (float)Math.Pow(actor.Collider.Width, 2) + (float)Math.Pow(actor.Collider.Height, 2);
+                float dist = Vector2.DistanceSquared(Collider.Center, actor.Collider.Center);
+                if (dist <= diagLengthSquared + myDiagLengthSquared)
+                {
+                    _active = true;
+                    //Solids.Remove(this);
+                }
+            }
+
+            if (_active)
+            {
+                Collider.DebugColor = Color.Red;
+                if (!Solids.Contains(this)) Solids.Add(this);
+            }
+            else
+            {
+                Collider.DebugColor = Color.DarkRed;
+                if (Solids.Contains(this)) Solids.Remove(this);
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
