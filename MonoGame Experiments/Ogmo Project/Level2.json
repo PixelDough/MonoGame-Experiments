@@ -15,7 +15,7 @@
       "gridCellHeight": 8,
       "gridCellsX": 64,
       "gridCellsY": 64,
-      "tileset": "TilesetBlobs",
+      "tileset": "TilesetStone",
       "dataCoords": [
         [-1],
         [-1],

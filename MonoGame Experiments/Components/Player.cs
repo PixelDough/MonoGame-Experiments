@@ -58,8 +58,11 @@ namespace MonoGame_Experiments.Components
 
             _velocity.X = MathHelper.Lerp(_velocity.X, moveAmountX, 0.2f);
 
-            _velocity.Y += 0.2f;
-            if (_velocity.Y > 0) _velocity.Y += 0.1f;
+            float grav = 0.2f;
+            if (_velocity.Y < 1 && _velocity.Y > -0.5f)
+                grav /= 2;
+            _velocity.Y += grav;
+            if (_velocity.Y > 0) _velocity.Y += grav / 2;
 
             if (Input.IsInputPressed(new List<Keys> { Keys.Space }, new List<Buttons> { Buttons.A } ))
                 _velocity.Y = -4 + ((_positionCheck - _positionLast).Y / 1.5f);

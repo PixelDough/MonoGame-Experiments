@@ -32,7 +32,7 @@ namespace MonoGame_Experiments.Components
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Position, _spriteRectangle, Color.White);
+            spriteBatch.Draw(_texture, Position, _spriteRectangle, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0.1f);
         }
 
         public override void Update(GameTime gameTime)

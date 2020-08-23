@@ -173,7 +173,7 @@ namespace MonoGame_Experiments
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (Game.DebugMode)
-                spriteBatch.Draw(RectangleTexture, Position, Color.Multiply(DebugColor, 1f));
+                spriteBatch.Draw(RectangleTexture, Position, null, Color.Multiply(DebugColor, 1f), 0f, Vector2.Zero, 1, SpriteEffects.None, 1f);
         }
     }
 }

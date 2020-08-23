@@ -38,10 +38,10 @@ namespace MonoGame_Experiments.Scenes
 
 
             Entity object1 = new Entity(new Vector2(64, 128));
-            Texture2D texture = ContentHandler.Instance.Load<Texture2D>("Sprites/Toast_die");
+            Texture2D texture = ContentHandler.Instance.Load<Texture2D>("Sprites/SlimeCube");
             object1.AddComponent(new Player());
-            object1.AddComponent(new Sprite(texture, texture.Width, texture.Height, Vector2.Zero));
-            object1.AddComponent(new Collider(new Vector2(2, 3), 12, 13));
+            object1.AddComponent(new Sprite(texture, texture.Width, texture.Height, Vector2.Zero, .5f));
+            object1.AddComponent(new Collider(new Vector2(1, 3), 14, 13));
 
             gameObjects.Add(object1);
 

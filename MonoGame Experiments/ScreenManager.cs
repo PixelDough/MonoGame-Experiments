@@ -10,6 +10,7 @@ namespace MonoGame_Experiments
     {
         public bool Initialized { get; private set; } = false;
         public RenderTarget2D RenderTarget { get; private set; }
+        public RenderTarget2D RenderTargetUI { get; private set; }
 
         private Game _game;
 

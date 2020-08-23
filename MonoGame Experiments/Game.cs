@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame_Experiments.Components;
@@ -81,16 +82,20 @@ namespace MonoGame_Experiments
 
         protected override void Draw(GameTime gameTime)
         {
-            _screenManager.SpriteBatch.Begin(transformMatrix: Camera.TransformationMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
+            // TODO: Make a more robust layering system. Use multiple spriteBatches, and some way of collecting anything that needs to be drawn using a certain spriteBatch. Maybe make a manager class.
+            // Tip: FrontToBack: 1f = Front, 0f = Back
+            _screenManager.SpriteBatch.Begin(transformMatrix: Camera.TransformationMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, sortMode: SpriteSortMode.FrontToBack);
             GraphicsDevice.SetRenderTarget(_screenManager.RenderTarget);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _currentScene.Draw(_screenManager.SpriteBatch); 
+            _currentScene.Draw(_screenManager.SpriteBatch);
+            
 
             _screenManager.SpriteBatch.End();
 
             DrawRenderTargetToScreen();
 
+            DrawDebugOverlay(gameTime);
 
             base.Draw(gameTime);
         }
@@ -105,6 +110,20 @@ namespace MonoGame_Experiments
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             GraphicsDevice.SetRenderTarget(null);
             _spriteBatch.Draw(_screenManager.RenderTarget, _screenManager.RenderRectangle, Color.White);
+            _spriteBatch.End();
+        }
+
+        private void DrawDebugOverlay(GameTime gameTime)
+        {
+            // TODO: Add a DebugConsole class, which will keep the main command line in the bottom left, and will store and show recent commands above it.
+            // It will also store things like the system font, so basically all of this will be relocated there.
+            SpriteFont font = Content.Load<SpriteFont>("Fonts/system");
+
+            _spriteBatch.Begin();
+            _spriteBatch.DrawString(font, "Hello World!", Vector2.Zero, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 1f);
+
+            Color deltaTimeTooHigh = (gameTime.ElapsedGameTime.TotalSeconds > TargetElapsedTime.TotalSeconds) ? Color.Red : Color.White;
+            _spriteBatch.DrawString(font, "DeltaTime: " + gameTime.ElapsedGameTime.TotalSeconds, Vector2.UnitY * 24, deltaTimeTooHigh);
             _spriteBatch.End();
         }
 
