@@ -63,7 +63,36 @@ namespace MonoGame_Experiments.Components
 
                 while (move != 0)
                 {
-                    if (!Collider.CollideAt(Solid.Solids, Collider.Position + (Vector2.UnitX * sign)))
+                    bool hitSolid = Collider.CollideAt(Solid.Solids, Collider.Position + (Vector2.UnitX * sign));
+
+                    bool hitTilemap = false;
+                    foreach(TilemapLayer layer in Tile.CurrentTilemap.layers)
+                    {
+                        if (layer.dataCoords == null) continue;
+                        int left_tile = (int)MathF.Floor((Collider.Left + sign) / layer.gridCellWidth);
+                        int right_tile = (int)MathF.Floor((Collider.Right + sign) / layer.gridCellWidth);
+                        int top_tile = (int)MathF.Floor(Collider.Top / layer.gridCellHeight);
+                        int bottom_tile = (int)MathF.Floor(Collider.Bottom / layer.gridCellHeight);
+
+                        if (left_tile < 0) left_tile = 0;
+                        if (right_tile > layer.gridCellsX) right_tile = layer.gridCellsX;
+                        if (top_tile < 0) top_tile = 0;
+                        if (bottom_tile > layer.gridCellsY) bottom_tile = layer.gridCellsY;
+
+                        for (int xx = left_tile; xx <= right_tile; xx++)
+                        {
+                            for (int yy = top_tile; yy <= bottom_tile; yy++)
+                            {
+                                int[] tileData = layer.dataCoords[xx + (yy * layer.gridCellsX)];
+                                if (tileData[0] != -1)
+                                {
+                                    hitTilemap = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!hitSolid && !hitTilemap)
                     {
                         // No solid immediately beside us
                         Transform.Position += Vector2.UnitX * sign;
@@ -96,7 +125,37 @@ namespace MonoGame_Experiments.Components
 
                 while (move != 0)
                 {
-                    if (!Collider.CollideAt(Solid.Solids, Collider.Position + (Vector2.UnitY * sign)))
+                    Collider.RefreshPositionToTransform();
+                    bool hitSolid = Collider.CollideAt(Solid.Solids, Collider.Position + (Vector2.UnitY * sign));
+
+                    bool hitTilemap = false;
+                    foreach (TilemapLayer layer in Tile.CurrentTilemap.layers)
+                    {
+                        if (layer.dataCoords == null) continue;
+                        int left_tile = (int)MathF.Floor(Collider.Left / layer.gridCellWidth);
+                        int right_tile = (int)MathF.Floor(Collider.Right/ layer.gridCellWidth);
+                        int top_tile = (int)MathF.Floor((Collider.Top + sign) / layer.gridCellHeight);
+                        int bottom_tile = (int)MathF.Floor((Collider.Bottom + sign) / layer.gridCellHeight);
+
+                        if (left_tile < 0) left_tile = 0;
+                        if (right_tile > layer.gridCellsX) right_tile = layer.gridCellsX;
+                        if (top_tile < 0) top_tile = 0;
+                        if (bottom_tile > layer.gridCellsY) bottom_tile = layer.gridCellsY;
+
+                        for (int xx = left_tile; xx <= right_tile; xx++)
+                        {
+                            for (int yy = top_tile; yy <= bottom_tile; yy++)
+                            {
+                                int[] tileData = layer.dataCoords[xx + (yy * layer.gridCellsX)];
+                                if (tileData[0] != -1)
+                                {
+                                    hitTilemap = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!hitSolid && !hitTilemap)
                     {
                         // No solid immediately beside us
                         Transform.Position += Vector2.UnitY * sign;
@@ -131,7 +190,36 @@ namespace MonoGame_Experiments.Components
             {
                 for (int j = 1; j >= -1; j -= 2)
                 {
-                    if (!Collider.CollideAt(Solid.Solids, Collider.Position + new Vector2(i * j, -1)))
+                    bool hitSolid = Collider.CollideAt(Solid.Solids, Collider.Position + new Vector2(i * j, -1));
+
+                    bool hitTilemap = false;
+                    foreach (TilemapLayer layer in Tile.CurrentTilemap.layers)
+                    {
+                        if (layer.dataCoords == null) continue;
+                        int left_tile = (int)MathF.Floor((Collider.Left + i * j) / layer.gridCellWidth);
+                        int right_tile = (int)MathF.Floor((Collider.Right + i * j) / layer.gridCellWidth);
+                        int top_tile = (int)MathF.Floor((Collider.Top - 1) / layer.gridCellHeight);
+                        int bottom_tile = (int)MathF.Floor((Collider.Bottom - 1) / layer.gridCellHeight);
+
+                        if (left_tile < 0) left_tile = 0;
+                        if (right_tile > layer.gridCellsX) right_tile = layer.gridCellsX;
+                        if (top_tile < 0) top_tile = 0;
+                        if (bottom_tile > layer.gridCellsY) bottom_tile = layer.gridCellsY;
+
+                        for (int xx = left_tile; xx <= right_tile; xx++)
+                        {
+                            for (int yy = top_tile; yy <= bottom_tile; yy++)
+                            {
+                                int[] tileData = layer.dataCoords[xx + (yy * layer.gridCellsX)];
+                                if (tileData[0] != -1)
+                                {
+                                    hitTilemap = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!hitSolid && !hitTilemap)
                     {
                         Transform.Position += Vector2.UnitX * (i * j);
                         Collider.RefreshPositionToTransform();

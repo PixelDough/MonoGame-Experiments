@@ -14,21 +14,35 @@ namespace MonoGame_Experiments.Components
         private int _height;
         private Vector2 _localPosition;
         private float _depth;
+        private Rectangle? _spriteRectangle;
 
         public bool FlipX = false;
 
-        public Sprite(Texture2D texture, int width, int height, Vector2 localPosition, float depth = 1f)
+        public Sprite(Texture2D texture, int width, int height, Vector2 localPosition, float depth = 1f, Rectangle? spriteRectangle = null)
         {
             _texture = texture;
             _width = width;
             _height = height;
             _localPosition = localPosition;
             _depth = depth;
+            _spriteRectangle = spriteRectangle ?? null;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, new Rectangle((int)Transform.Position.X +  (int)_localPosition.X, (int)Transform.Position.Y + (int)_localPosition.Y, _width, _height), null, Color.White, 0, new Vector2(0, 0), FlipX ? SpriteEffects.FlipHorizontally : SpriteEffects.None, _depth);
+            spriteBatch.Draw(
+                _texture, 
+                new Rectangle(
+                    (int)Transform.Position.X + (int)_localPosition.X, 
+                    (int)Transform.Position.Y + (int)_localPosition.Y, 
+                    _width, 
+                    _height), 
+                _spriteRectangle, 
+                Color.White, 
+                0, 
+                new Vector2(0, 0), 
+                FlipX ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 
+                _depth);
             
         }
         

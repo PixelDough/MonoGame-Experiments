@@ -20,7 +20,7 @@ namespace MonoGame_Experiments
         public ContentHandler ContentHandler;
         private SpriteBatch _spriteBatch;
 
-        private ScreenManager _screenManager;
+        public static ScreenManager ScreenManager;
 
         // CHANGE LATER
         public static Scene _currentScene;
@@ -41,12 +41,11 @@ namespace MonoGame_Experiments
 
         protected override void Initialize()
         {
-            _currentScene = new SceneMenu();
-            
-            _screenManager = new ScreenManager(this, 320, 180);
-            _screenManager.Init(Graphics, Window);
+            ScreenManager = new ScreenManager(this, 320, 180);
+            ScreenManager.Init(Graphics, Window);
+            ScreenManager.UpdateRenderRectangle(Window);
 
-            _screenManager.UpdateRenderRectangle(Window);
+            _currentScene = new SceneMenu();
 
             base.Initialize();
         }
@@ -68,7 +67,7 @@ namespace MonoGame_Experiments
 
             if (Input.IsKeyPressed(Keys.F11))
             {
-                _screenManager.ToggleFullScreen();
+                ScreenManager.ToggleFullScreen();
             }
             if (Input.IsKeyPressed(Keys.F4) || (Input.IsInputDown(buttons: new List<Buttons>() { Buttons.Back }) && Input.IsInputPressed(buttons: new List<Buttons>() { Buttons.Y })))
             {
@@ -84,14 +83,14 @@ namespace MonoGame_Experiments
         {
             // TODO: Make a more robust layering system. Use multiple spriteBatches, and some way of collecting anything that needs to be drawn using a certain spriteBatch. Maybe make a manager class.
             // Tip: FrontToBack: 1f = Front, 0f = Back
-            _screenManager.SpriteBatch.Begin(transformMatrix: Camera.TransformationMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, sortMode: SpriteSortMode.FrontToBack);
-            GraphicsDevice.SetRenderTarget(_screenManager.RenderTarget);
+            ScreenManager.SpriteBatch.Begin(transformMatrix: Camera.TransformationMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, sortMode: SpriteSortMode.FrontToBack);
+            GraphicsDevice.SetRenderTarget(ScreenManager.RenderTarget);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _currentScene.Draw(_screenManager.SpriteBatch);
+            _currentScene.Draw(ScreenManager.SpriteBatch);
             
 
-            _screenManager.SpriteBatch.End();
+            ScreenManager.SpriteBatch.End();
 
             DrawRenderTargetToScreen();
 
@@ -109,7 +108,7 @@ namespace MonoGame_Experiments
             //partRectangle.Height = (int)MathF.Round(Camera.Viewport.Height / Camera.Zoom);
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             GraphicsDevice.SetRenderTarget(null);
-            _spriteBatch.Draw(_screenManager.RenderTarget, _screenManager.RenderRectangle, Color.White);
+            _spriteBatch.Draw(ScreenManager.RenderTarget, ScreenManager.RenderRectangle, Color.White);
             _spriteBatch.End();
         }
 
@@ -135,9 +134,9 @@ namespace MonoGame_Experiments
 
         private void OnWindowResize(object sender, EventArgs e)
         {
-            if (_screenManager == null) { return; }
+            if (ScreenManager == null) { return; }
 
-            _screenManager.UpdateRenderRectangle(Window);
+            ScreenManager.UpdateRenderRectangle(Window);
             //_screenManager.UpdateRenderRectangle(Window);
         }
     }

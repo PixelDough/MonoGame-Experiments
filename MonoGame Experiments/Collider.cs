@@ -23,7 +23,6 @@ namespace MonoGame_Experiments
         public static List<Collider> Colliders = new List<Collider>();
 
         public Color DebugColor = Color.Red;
-
         public int Width { get; set; }
         public int Height { get; set; }
 
@@ -44,8 +43,8 @@ namespace MonoGame_Experiments
 
         public int Bottom
         {
-            get { return (int)Position.Y + Height; }
-            set { _position.Y = value - Height; }
+            get { return (int)Position.Y + Height - 1; }
+            set { _position.Y = value - Height - 1; }
         }
 
         public int Left
@@ -56,13 +55,14 @@ namespace MonoGame_Experiments
 
         public int Right
         {
-            get { return (int)Position.X + Width; }
-            set { _position.X = value - Width; }
+            get { return (int)Position.X + Width - 1; }
+            set { _position.X = value - Width - 1; }
         }
 
         public Vector2 Center
         {
             get { return new Vector2(Position.X + Width / 2, Position.Y + Height / 2); }
+            set { _position = new Vector2(value.X - Width / 2, value.Y - Height / 2); }
         }
 
         public Vector2 BottomCenter
@@ -125,10 +125,10 @@ namespace MonoGame_Experiments
             Vector2 _localOffset = Vector2.Zero;
             if (localOffset != null) _localOffset = (Vector2)localOffset;
 
-            if (this.Left + _localOffset.X < other.Right
-                && this.Right + _localOffset.X > other.Left
-                && this.Top + _localOffset.Y < other.Bottom
-                && this.Bottom + _localOffset.Y > other.Top)
+            if (this.Left + _localOffset.X <= other.Right
+                && this.Right + _localOffset.X >= other.Left
+                && this.Top + _localOffset.Y <= other.Bottom
+                && this.Bottom + _localOffset.Y >= other.Top)
             {
                 return true;
             }
@@ -147,10 +147,10 @@ namespace MonoGame_Experiments
                 // I am stupid and forgot to put this in. No wonder my moving solids were preventing the actors from moving when being pushed!
                 if (!rigidbody.Collider.Collidable) { continue; }
 
-                if (this.Left + relativePos.X < rigidbody.Collider.Right
-                    && this.Right + relativePos.X > rigidbody.Collider.Left
-                    && this.Top + relativePos.Y < rigidbody.Collider.Bottom
-                    && this.Bottom + relativePos.Y > rigidbody.Collider.Top)
+                if (this.Left + relativePos.X <= rigidbody.Collider.Right
+                    && this.Right + relativePos.X >= rigidbody.Collider.Left
+                    && this.Top + relativePos.Y <= rigidbody.Collider.Bottom
+                    && this.Bottom + relativePos.Y >= rigidbody.Collider.Top)
                 {
                     return true;
                 }

@@ -221,7 +221,7 @@ namespace MonoGame_Experiments
         }
 
         private Texture2D tilesetTexture;
-        private List<Tile> tiles;
+        private List<Tile> tiles = new List<Tile>();
         public Texture2D GetTexture2D()
         {
             if (tilesetTexture == null)
@@ -234,7 +234,6 @@ namespace MonoGame_Experiments
         }
         public List<Tile> GetTiles()
         {
-            List<Tile> tiles = new List<Tile>();
 
             // If we have not loaded the tiles yet...
             if (tiles == null || tiles.Count <= 0)
@@ -261,7 +260,7 @@ namespace MonoGame_Experiments
                         spriteRectangle.X = (int)bitPosOnTilemap.X;
                         spriteRectangle.Y = (int)bitPosOnTilemap.Y;
 
-                        Tile tile = new Tile(GetTexture2D(), worldPos, spriteRectangle);
+                        Tile tile = new Tile(GetTexture2D(), worldPos, spriteRectangle, new Vector2(xPos, yPos));
                         tile.TilemapLayer = this;
                         tile.IdOnTilemap = i;
 

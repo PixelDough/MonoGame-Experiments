@@ -17,7 +17,7 @@ namespace MonoGame_Experiments.Components
 
         public Solid()
         {
-            Solids.Add(this);
+            //Solids.Add(this);
         }
 
         public override void Update(GameTime gameTime)
@@ -29,10 +29,9 @@ namespace MonoGame_Experiments.Components
             {
                 float diagLengthSquared = (float)Math.Pow(actor.Collider.Width, 2) + (float)Math.Pow(actor.Collider.Height, 2);
                 float dist = Vector2.DistanceSquared(Collider.Center, actor.Collider.Center);
-                if (dist <= diagLengthSquared + myDiagLengthSquared)
+                if (dist <= diagLengthSquared + myDiagLengthSquared + 10)
                 {
                     _active = true;
-                    //Solids.Remove(this);
                 }
             }
 

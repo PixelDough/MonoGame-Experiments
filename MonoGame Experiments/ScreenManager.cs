@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MonoGame_Experiments
 {
-    class ScreenManager
+    public class ScreenManager
     {
         public bool Initialized { get; private set; } = false;
         public RenderTarget2D RenderTarget { get; private set; }
