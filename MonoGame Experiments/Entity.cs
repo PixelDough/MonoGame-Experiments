@@ -119,6 +119,18 @@ namespace MonoGame_Experiments
             }
         }
 
+        public virtual void DebugDraw(SpriteBatch spriteBatch)
+        {
+            foreach (var component in _components)
+            {
+                //component.Debu(spriteBatch);
+            }
+            foreach (Entity child in _children)
+            {
+                child.DebugDraw(spriteBatch);
+            }
+        }
+
         public static void Destroy(Entity entity)
         {
             entity._destroyed = true;
@@ -129,10 +141,10 @@ namespace MonoGame_Experiments
             private Vector2 _position;
             public Vector2 Position
             {
-                get { return Vector2.Round(_position); }
+                get { return (_position); }
                 set 
                 { 
-                    _position = Vector2.Round(value);
+                    _position = (value);
                     OnMoveEvent?.Invoke();
                 }
             }

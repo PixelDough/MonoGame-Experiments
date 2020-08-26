@@ -116,6 +116,7 @@ namespace MonoGame_Experiments
         {
             // TODO: Add a DebugConsole class, which will keep the main command line in the bottom left, and will store and show recent commands above it.
             // It will also store things like the system font, so basically all of this will be relocated there.
+            
             SpriteFont font = Content.Load<SpriteFont>("Fonts/system");
 
             _spriteBatch.Begin();
@@ -123,13 +124,8 @@ namespace MonoGame_Experiments
 
             Color deltaTimeTooHigh = (gameTime.ElapsedGameTime.TotalSeconds > TargetElapsedTime.TotalSeconds) ? Color.Red : Color.White;
             _spriteBatch.DrawString(font, "DeltaTime: " + gameTime.ElapsedGameTime.TotalSeconds, Vector2.UnitY * 24, deltaTimeTooHigh);
+            _spriteBatch.DrawString(font, "FPS: " + gameTime.ElapsedGameTime.TotalSeconds / TargetElapsedTime.TotalSeconds * 60, Vector2.UnitY * 48, Color.White);
             _spriteBatch.End();
-        }
-
-        float InverseLerp(float min, float max, float value)
-        {
-            if (MathF.Abs(max - min) < float.Epsilon) return min;
-            return (value - min) / (max - min);
         }
 
         private void OnWindowResize(object sender, EventArgs e)

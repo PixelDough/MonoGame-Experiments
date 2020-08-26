@@ -149,10 +149,10 @@ namespace MonoGame_Experiments.Components
                     {
                         foreach (Actor actor in Actor.Actors)
                         {
-                            if (Collider.CollisionCheck(actor.Collider, Vector2.Zero))
+                            if (Collider.CollisionCheck(actor.Collider, Vector2.UnitY))
                             {
                                 // Push down
-                                actor.MoveY(Collider.Bottom - actor.Collider.Top, new Action(actor.Squish));
+                                actor.MoveY(Collider.Bottom - actor.Collider.Top + 1, new Action(actor.Squish));
                                 //actor.MoveY(moveY, null);
                             }
                             else if (riding.Contains(actor))
@@ -166,10 +166,10 @@ namespace MonoGame_Experiments.Components
                     {
                         foreach (Actor actor in Actor.Actors)
                         {
-                            if (Collider.CollisionCheck(actor.Collider, Vector2.Zero))
+                            if (Collider.CollisionCheck(actor.Collider, -Vector2.UnitY))
                             {
                                 // Push up
-                                actor.MoveY(Collider.Top - actor.Collider.Bottom, new Action(actor.Squish));
+                                actor.MoveY(Collider.Top - actor.Collider.Bottom - 1, new Action(actor.Squish));
                                 //actor.MoveY(moveY, null);
 
                             }

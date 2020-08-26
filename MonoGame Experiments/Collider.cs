@@ -25,6 +25,7 @@ namespace MonoGame_Experiments
         public Color DebugColor = Color.Red;
         public int Width { get; set; }
         public int Height { get; set; }
+        public CollisionResult CollisionResults;
 
         public Collider(Vector2 localPosition, int width, int height)
         {
@@ -138,7 +139,7 @@ namespace MonoGame_Experiments
             }
         }
 
-        public bool CollideAt(List<IRigidbody> targets, Vector2 position)
+        public bool CollideAt(List<IRigidbody> targets, Vector2 position, bool includeTilemap = false)
         {
             //float dist = Vector2.Distance(Position, position);
             Vector2 relativePos = position - Position;
@@ -153,6 +154,35 @@ namespace MonoGame_Experiments
                     && this.Bottom + relativePos.Y >= rigidbody.Collider.Top)
                 {
                     return true;
+                }
+            }
+
+            if (includeTilemap)
+            {
+                foreach (TilemapLayer layer in Tile.CurrentTilemap.layers)
+                {
+                    if (layer.dataCoords == null) continue;
+                    int left_tile = (int)MathF.Floor((Left + relativePos.X) / layer.gridCellWidth);
+                    int right_tile = (int)MathF.Floor((Right + relativePos.X) / layer.gridCellWidth);
+                    int top_tile = (int)MathF.Floor((Top + relativePos.Y) / layer.gridCellHeight);
+                    int bottom_tile = (int)MathF.Floor((Bottom + relativePos.Y) / layer.gridCellHeight);
+
+                    if (left_tile < 0) left_tile = 0;
+                    if (right_tile > layer.gridCellsX) right_tile = layer.gridCellsX;
+                    if (top_tile < 0) top_tile = 0;
+                    if (bottom_tile > layer.gridCellsY) bottom_tile = layer.gridCellsY;
+
+                    for (int xx = left_tile; xx <= right_tile; xx++)
+                    {
+                        for (int yy = top_tile; yy <= bottom_tile; yy++)
+                        {
+                            int[] tileData = layer.dataCoords[xx + (yy * layer.gridCellsX)];
+                            if (tileData[0] != -1)
+                            {
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -174,6 +204,46 @@ namespace MonoGame_Experiments
 
             if (Game.DebugMode)
                 spriteBatch.Draw(RectangleTexture, Position, null, DebugColor, 0f, Vector2.Zero, 1, SpriteEffects.None, 1f);
+        }
+
+        public struct CollisionResult
+        {
+            public Side Sides;
+            [Flags]
+            public enum Side
+            {
+                None = 0,
+                Left = 1,
+                Right = 2,
+                Up = 4,
+                Down = 8
+            }
+
+            public bool HasSide(Side side)
+            {
+                return Sides.HasFlag(side);
+            }
+
+            public bool DoesNotHaveSide(Side side)
+            {
+                return !Sides.HasFlag(side);
+            }
+
+            public void SetSide(Side side)
+            {
+                Sides |= side;
+            }
+
+            public void RemoveSide(Side side)
+            {
+                Sides &= ~side;
+            }
+
+            public void ClearSides()
+            {
+                Sides = Side.None;
+            }
+
         }
     }
 }

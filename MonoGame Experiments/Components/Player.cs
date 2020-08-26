@@ -16,6 +16,24 @@ namespace MonoGame_Experiments.Components
 
         private Sprite _sprite;
 
+        private float _coyoteTime = 0f;
+        private float _coyoteTimeMax = .1f;
+        private float _jumpBufferTime = 0f;
+        private float _jumpBufferTimeMax = .1f;
+        private bool _isGrounded = false;
+        private bool _camJump
+        {
+            get
+            {
+                if (_coyoteTime > 0)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
         public Player() : base()
         {
 
@@ -37,6 +55,8 @@ namespace MonoGame_Experiments.Components
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+
             if (_sprite == null) _sprite = _entity.GetComponent<Sprite>();
 
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
@@ -64,8 +84,20 @@ namespace MonoGame_Experiments.Components
             _velocity.Y += grav;
             if (_velocity.Y > 0) _velocity.Y += grav / 2;
 
-            if (Input.IsInputPressed(new List<Keys> { Keys.Space }, new List<Buttons> { Buttons.A } ))
-                _velocity.Y = -4 + ((_positionCheck - _positionLast).Y / 1.5f);
+            // TODO: Take the _jumpBufferTime out and into some sort of PlayerInput class, which would buffer this input action.
+            _jumpBufferTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (Input.IsInputPressed(new List<Keys> { Keys.Space }, new List<Buttons> { Buttons.A }))
+            {
+                if (_camJump)
+                {
+                    Jump();
+                }
+                else
+                {
+                    _jumpBufferTime = _jumpBufferTimeMax;
+                }
+            }
+            if (_jumpBufferTime > 0 && _isGrounded && _positionCheck.Y == _positionLast.Y) Jump();
 
             if (Input.IsInputReleased(new List<Keys> { Keys.Space }, new List<Buttons> { Buttons.A }))
             {
@@ -83,11 +115,22 @@ namespace MonoGame_Experiments.Components
             MoveX(_velocity.X, OnCollideX);
             Collider.Update(gameTime);
 
-            //Collider.BottomCenter = Vector2.Zero;
+            _coyoteTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _isGrounded = false;
+            if (Collider.CollideAt(Solid.Solids, Collider.Position + Vector2.UnitY, true))
+            {
+                _coyoteTime = _coyoteTimeMax;
+                _isGrounded = true;
+            }
 
-            // TODO: Fix case where there is no x or y axis collision, but movement goes into a solid.
-            //_baseObject.transform.Position += moveAmount;
+        }
 
+        private void Jump()
+        {
+            _velocity.Y = -4 + ((_positionCheck - _positionLast).Y / 1.5f);
+            _coyoteTime = 0f;
+            _jumpBufferTime = 0f;
+            _isGrounded = false;
         }
 
         public void UpdateFollowCameraPosition()

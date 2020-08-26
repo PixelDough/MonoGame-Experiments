@@ -21,6 +21,7 @@ namespace MonoGame_Experiments.Scenes
             Game.ScreenManager.SpriteBatch.GraphicsDevice.Clear(new Color(0, 0, 0, 0));
             Game.ScreenManager.SpriteBatch.GraphicsDevice.SetRenderTarget(Tile.CurrentTilemapRenderTarget2D);
             Game.ScreenManager.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            Game.Graphics.GraphicsDevice.Clear(Color.Transparent);
             Tilemap tilemap = OgmoTilemapManager.LoadLevelData("Level1");
             if (tilemap != null)
             {
@@ -31,14 +32,6 @@ namespace MonoGame_Experiments.Scenes
                     {
                         foreach (Tile tile in layer.GetTiles())
                         {
-                            //Entity tileObject = new Entity(tile.Position);
-                            //tileObject.AddComponent(tile);
-                            //Collider collider = new Collider(Vector2.Zero, tile.SpriteRectangle.Width, tile.SpriteRectangle.Height);
-                            //tileObject.AddComponent(collider);
-
-                            //gameObjects.Add(tileObject);
-                            
-                            //tile.DrawTile(Game.ScreenManager.SpriteBatch);
                             Game.ScreenManager.SpriteBatch.Draw(layer.GetTexture2D(), tile.Position, tile.SpriteRectangle, Color.White);
                         }
                     }
@@ -56,7 +49,7 @@ namespace MonoGame_Experiments.Scenes
             gameObjects.Add(object1);
 
             Entity movingBlock = new Entity(new Vector2(64, 256 + 48));
-            //movingBlock.AddComponent(new MovingBlock());
+            movingBlock.AddComponent(new MovingBlock());
             movingBlock.AddComponent(new Solid());
             movingBlock.AddComponent(new Sprite(ContentHandler.Instance.Load<Texture2D>("Sprites/Pixel"), 24, 8, Vector2.Zero));
             movingBlock.AddComponent(new Collider(new Vector2(0, 0), 24, 8));
@@ -65,18 +58,13 @@ namespace MonoGame_Experiments.Scenes
             Random random = new Random();
             for (int i = 0; i < 100; i++)
             {
-                //float randomX = random.Next(-4, 5);
-                //float randomY = random.Next(-4, 5);
-                //Entity flyingBubble = new Entity(new Vector2(64 + randomX, 80 + randomY));
-
-                float randomX = random.Next(0, 512 - 32);
-                float randomY = random.Next(0, 512 - 32);
+                float randomX = random.Next(0, Tile.CurrentTilemap.width - 16);
+                float randomY = random.Next(0, Tile.CurrentTilemap.height - 16);
                 Entity flyingBubble = new Entity(new Vector2(randomX, randomY));
 
                 float randomDirX = random.Next(2) == 0 ? -1 : 1;
                 float randomDirY = random.Next(2) == 0 ? -1 : 1;
-                float randomSpeed = random.Next(1, 3);
-                flyingBubble.AddComponent(new FlyingBubble(new Vector2(randomDirX, randomDirY), 1));
+                flyingBubble.AddComponent(new FlyingBubble(new Vector2(randomDirX, randomDirY), 1f));
                 flyingBubble.AddComponent(new Sprite(ContentHandler.Instance.Load<Texture2D>("Sprites/ZeldaBubble"), 16, 15, Vector2.Zero, spriteRectangle: new Rectangle(random.Next(0, 4) * 16, 0, 16, 15)));
                 flyingBubble.AddComponent(new Collider(new Vector2(0, 0), 16, 15));
                 gameObjects.Add(flyingBubble);
@@ -94,6 +82,12 @@ namespace MonoGame_Experiments.Scenes
                 gameObject.LateUpdate(gameTime);
             
             
+        }
+
+        public override void DebugDraw(SpriteBatch spriteBatch)
+        {
+            base.DebugDraw(spriteBatch);
+
         }
     }
 }

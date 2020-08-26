@@ -20,6 +20,10 @@ namespace MonoGame_Experiments.Scenes
         public abstract void Initialize();
         public abstract void Update(GameTime gameTime);
         public abstract void Draw(SpriteBatch spriteBatch);
+        public virtual void DebugDraw(SpriteBatch spriteBatch) 
+        { 
+
+        }
 
     }
 }
