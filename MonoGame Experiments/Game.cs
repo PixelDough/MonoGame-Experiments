@@ -22,11 +22,13 @@ namespace MonoGame_Experiments
 
         public static ScreenManager ScreenManager;
 
-        // CHANGE LATER
+        // TODO: Make a SceneManager class
         public static Scene _currentScene;
 
         public static Camera2D Camera;
         public static bool DebugMode = false;
+
+        // TODO: Make a tilemap manager
 
         public Game()
         {
@@ -41,11 +43,7 @@ namespace MonoGame_Experiments
 
         protected override void Initialize()
         {
-            ScreenManager = new ScreenManager(this, 320, 180);
-            ScreenManager.Init(Graphics, Window);
-            ScreenManager.UpdateRenderRectangle(Window);
-
-            _currentScene = new SceneMenu();
+            
 
             base.Initialize();
         }
@@ -54,7 +52,11 @@ namespace MonoGame_Experiments
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            
+            ScreenManager = new ScreenManager(this, 320, 180);
+            ScreenManager.Init(Graphics, Window, _spriteBatch);
+            ScreenManager.UpdateRenderRectangle(Window);
+
+            _currentScene = new SceneMenu();
 
         }
 
@@ -65,6 +67,21 @@ namespace MonoGame_Experiments
 
             Input.Update(gameTime);
 
+            if (Input.IsKeyPressed(Keys.R))
+            {
+                if (_currentScene == null)
+                {
+                    _currentScene = new SceneMenu();
+                    GC.Collect();
+                }
+                else
+                {
+                    _currentScene = null;
+                    GC.Collect();
+                }
+                
+            }
+
             if (Input.IsKeyPressed(Keys.F11))
             {
                 ScreenManager.ToggleFullScreen();
@@ -74,7 +91,7 @@ namespace MonoGame_Experiments
                 DebugMode = !DebugMode;
             }
 
-            _currentScene.Update(gameTime);
+            _currentScene?.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -83,14 +100,14 @@ namespace MonoGame_Experiments
         {
             // TODO: Make a more robust layering system. Use multiple spriteBatches, and some way of collecting anything that needs to be drawn using a certain spriteBatch. Maybe make a manager class.
             // Tip: FrontToBack: 1f = Front, 0f = Back
-            ScreenManager.SpriteBatch.Begin(transformMatrix: Camera.TransformationMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, sortMode: SpriteSortMode.FrontToBack);
+            _spriteBatch.Begin(transformMatrix: Camera.TransformationMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, sortMode: SpriteSortMode.FrontToBack);
             GraphicsDevice.SetRenderTarget(ScreenManager.RenderTarget);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _currentScene.Draw(ScreenManager.SpriteBatch);
+            _currentScene?.Draw(_spriteBatch);
             
 
-            ScreenManager.SpriteBatch.End();
+            _spriteBatch.End();
 
             DrawRenderTargetToScreen();
 

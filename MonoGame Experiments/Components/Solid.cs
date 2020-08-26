@@ -12,7 +12,6 @@ namespace MonoGame_Experiments.Components
     {
 
         public Collider Collider { get { return _entity.GetComponent<Collider>(); } }
-        public static List<IRigidbody> Solids = new List<IRigidbody>();
         private bool _active = false;
 
         public Solid()
@@ -25,7 +24,7 @@ namespace MonoGame_Experiments.Components
             float myDiagLengthSquared = (Collider.Width * Collider.Width) + (Collider.Height * Collider.Height);
 
             _active = false;
-            foreach (Actor actor in Actor.Actors)
+            foreach (Actor actor in Game._currentScene.Actors)
             {
                 float diagLengthSquared = (float)Math.Pow(actor.Collider.Width, 2) + (float)Math.Pow(actor.Collider.Height, 2);
                 float dist = Vector2.DistanceSquared(Collider.Center, actor.Collider.Center);
@@ -38,12 +37,12 @@ namespace MonoGame_Experiments.Components
             if (_active)
             {
                 Collider.DebugColor = Color.Red;
-                if (!Solids.Contains(this)) Solids.Add(this);
+                if (!Game._currentScene.Solids.Contains(this)) Game._currentScene.Solids.Add(this);
             }
             else
             {
                 Collider.DebugColor = Color.DarkRed;
-                if (Solids.Contains(this)) Solids.Remove(this);
+                if (Game._currentScene.Solids.Contains(this)) Game._currentScene.Solids.Remove(this);
             }
         }
 
@@ -65,7 +64,7 @@ namespace MonoGame_Experiments.Components
         {
             List<Actor> returnValue = new List<Actor>();
 
-            foreach (Actor actor in Actor.Actors)
+            foreach (Actor actor in Game._currentScene.Actors)
             {
                 if (actor.IsRiding(this))
                 {
@@ -105,7 +104,7 @@ namespace MonoGame_Experiments.Components
 
                     if (moveX > 0)
                     {
-                        foreach (Actor actor in Actor.Actors)
+                        foreach (Actor actor in Game._currentScene.Actors)
                         {
                             if (Collider.CollisionCheck(actor.Collider, Vector2.Zero))
                             {
@@ -121,7 +120,7 @@ namespace MonoGame_Experiments.Components
                     }
                     else
                     {
-                        foreach (Actor actor in Actor.Actors)
+                        foreach (Actor actor in Game._currentScene.Actors)
                         {
                             if (Collider.CollisionCheck(actor.Collider, Vector2.Zero))
                             {
@@ -147,9 +146,9 @@ namespace MonoGame_Experiments.Components
 
                     if (moveY > 0)
                     {
-                        foreach (Actor actor in Actor.Actors)
+                        foreach (Actor actor in Game._currentScene.Actors)
                         {
-                            if (Collider.CollisionCheck(actor.Collider, Vector2.UnitY))
+                            if (Collider.CollisionCheck(actor.Collider, Vector2.Zero))
                             {
                                 // Push down
                                 actor.MoveY(Collider.Bottom - actor.Collider.Top + 1, new Action(actor.Squish));
@@ -164,9 +163,9 @@ namespace MonoGame_Experiments.Components
                     }
                     else
                     {
-                        foreach (Actor actor in Actor.Actors)
+                        foreach (Actor actor in Game._currentScene.Actors)
                         {
-                            if (Collider.CollisionCheck(actor.Collider, -Vector2.UnitY))
+                            if (Collider.CollisionCheck(actor.Collider, -Vector2.Zero))
                             {
                                 // Push up
                                 actor.MoveY(Collider.Top - actor.Collider.Bottom - 1, new Action(actor.Squish));
@@ -194,7 +193,7 @@ namespace MonoGame_Experiments.Components
         {
             base.OnDestroy();
 
-            Solids.Remove(this);
+            Game._currentScene.Solids.Remove(this);
         }
     }
 }

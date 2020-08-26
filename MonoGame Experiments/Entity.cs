@@ -7,9 +7,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace MonoGame_Experiments
+namespace MonoGame_Experiments 
 {
-    public class Entity
+    public class Entity : IDisposable
     {
         public int ID { get; set; }
 
@@ -20,6 +20,7 @@ namespace MonoGame_Experiments
 
         private List<Component> _componentsToInitialize = new List<Component>();
         private bool _destroyed = false;
+        private bool disposedValue;
 
         public Entity(Vector2 position)
         {
@@ -162,5 +163,34 @@ namespace MonoGame_Experiments
             public Action OnMoveEvent;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                transform.OnMoveEvent = null;
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~Entity()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

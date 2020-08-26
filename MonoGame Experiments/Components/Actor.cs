@@ -23,19 +23,19 @@ namespace MonoGame_Experiments.Components
                 }
             }
         }
-        public static List<IRigidbody> Actors = new List<IRigidbody>();
 
         private float _velocityCap = 10f;
 
         public Actor()
         {
-            Actors.Add(this);
+
         }
 
         public override void Initialize(Entity baseObject)
         {
             base.Initialize(baseObject);
 
+            Game._currentScene.Actors.Add(this);
             Collider.DebugColor = Color.LawnGreen;
         }
 
@@ -63,7 +63,7 @@ namespace MonoGame_Experiments.Components
 
                 while (move != 0)
                 {
-                    bool hitSolid = Collider.CollideAt(Solid.Solids, Collider.Position + (Vector2.UnitX * sign), true);
+                    bool hitSolid = Collider.CollideAt(Game._currentScene.Solids, Collider.Position + (Vector2.UnitX * sign), true);
 
                     if (!hitSolid)
                     {
@@ -101,7 +101,7 @@ namespace MonoGame_Experiments.Components
                 while (move != 0)
                 {
                     Collider.RefreshPositionToTransform();
-                    bool hitSolid = Collider.CollideAt(Solid.Solids, Collider.Position + (Vector2.UnitY * sign), true);
+                    bool hitSolid = Collider.CollideAt(Game._currentScene.Solids, Collider.Position + (Vector2.UnitY * sign), true);
 
                     if (!hitSolid)
                     {
@@ -140,7 +140,7 @@ namespace MonoGame_Experiments.Components
             {
                 for (int j = 1; j >= -1; j -= 2)
                 {
-                    bool hitSolid = Collider.CollideAt(Solid.Solids, Collider.Position + new Vector2(i * j, -1), true);
+                    bool hitSolid = Collider.CollideAt(Game._currentScene.Solids, Collider.Position + new Vector2(i * j, -1), true);
 
                     if (!hitSolid)
                     {
@@ -171,7 +171,7 @@ namespace MonoGame_Experiments.Components
         {
             base.OnDestroy();
 
-            Actors.Remove(this);
+            Game._currentScene.Actors.Remove(this);
         }
 
     }

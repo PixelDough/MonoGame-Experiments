@@ -32,13 +32,13 @@ namespace MonoGame_Experiments
         }
         public ScreenManager(Game game, Vector2 resolution) : this(game, (int)resolution.X, (int)resolution.Y) { }
 
-        public void Init(GraphicsDeviceManager graphicsDeviceManager, GameWindow window)
+        public void Init(GraphicsDeviceManager graphicsDeviceManager, GameWindow window, SpriteBatch spriteBatch)
         {
             graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
             _game.IsFixedTimeStep = true;
             _game.TargetElapsedTime = TimeSpan.FromSeconds(1f / 60);
 
-            SpriteBatch = new SpriteBatch(graphicsDeviceManager.GraphicsDevice);
+            SpriteBatch = spriteBatch;
             RenderTarget = new RenderTarget2D(graphicsDeviceManager.GraphicsDevice, _width, _height);
             RenderScale = 4;
 

@@ -180,7 +180,7 @@ namespace MonoGame_Experiments
 
     }
 
-    public class Tilemap : DynamicObject
+    public class Tilemap
     {
         public string ogmoVersion { get; set; }
         public int width { get; set; }
@@ -190,7 +190,7 @@ namespace MonoGame_Experiments
         public TilemapLayer[] layers { get; set; }
     }
 
-    public class TilemapLayer : DynamicObject
+    public class TilemapLayer
     {
         public string name { get; set; }
         public string _eid { get; set; }
@@ -207,6 +207,8 @@ namespace MonoGame_Experiments
         public int exportMode { get; set; }
         public int arrayMode { get; set; }
 
+        public RenderTarget2D renderTarget2D;
+
         public class TilemapEntity
         {
             public string name { get; set; }
@@ -221,7 +223,7 @@ namespace MonoGame_Experiments
         }
 
         private Texture2D tilesetTexture;
-        private List<Tile> tiles = new List<Tile>();
+        //private List<Tile> tiles = new List<Tile>();
         public Texture2D GetTexture2D()
         {
             if (tilesetTexture == null)
@@ -236,48 +238,40 @@ namespace MonoGame_Experiments
         {
 
             // If we have not loaded the tiles yet...
-            if (tiles == null || tiles.Count <= 0)
+            List<Tile> list = new List<Tile>();
+
+            for (int i = 0; i < dataCoords.Length; i++)
             {
-                for (int i = 0; i < dataCoords.Length; i++)
+                int[] tileData = dataCoords[i];
+                if (tileData[0] != -1)
                 {
-                    int[] tileData = dataCoords[i];
-                    if (tileData[0] != -1)
-                    {
-                        int xPos = i % gridCellsX;
-                        int yPos = (int)MathF.Floor(i / gridCellsX);
+                    int xPos = i % gridCellsX;
+                    int yPos = (int)MathF.Floor(i / gridCellsX);
 
-                        Vector2 worldPos = new Vector2(xPos * gridCellWidth, yPos * gridCellHeight);
+                    Vector2 worldPos = new Vector2(xPos * gridCellWidth, yPos * gridCellHeight);
 
-                        Rectangle spriteRectangle = new Rectangle();
-                        spriteRectangle.X = tileData[0] * gridCellWidth;
-                        spriteRectangle.Y = tileData[1] * gridCellHeight;
+                    Rectangle spriteRectangle = new Rectangle();
+                    spriteRectangle.X = tileData[0] * gridCellWidth;
+                    spriteRectangle.Y = tileData[1] * gridCellHeight;
                         
-                        spriteRectangle.Width = gridCellWidth;
-                        spriteRectangle.Height = gridCellHeight;
+                    spriteRectangle.Width = gridCellWidth;
+                    spriteRectangle.Height = gridCellHeight;
 
-                        int borderBit = OgmoTilemapManager.GetTilemapBorders(this, i);
-                        Vector2 bitPosOnTilemap = OgmoTilemapManager.GetPositionOnBlobTilemap(borderBit, gridCellWidth, gridCellHeight);
-                        spriteRectangle.X = (int)bitPosOnTilemap.X;
-                        spriteRectangle.Y = (int)bitPosOnTilemap.Y;
+                    int borderBit = OgmoTilemapManager.GetTilemapBorders(this, i);
+                    Vector2 bitPosOnTilemap = OgmoTilemapManager.GetPositionOnBlobTilemap(borderBit, gridCellWidth, gridCellHeight);
+                    spriteRectangle.X = (int)bitPosOnTilemap.X;
+                    spriteRectangle.Y = (int)bitPosOnTilemap.Y;
 
-                        Tile tile = new Tile(GetTexture2D(), worldPos, spriteRectangle, new Vector2(xPos, yPos));
-                        tile.TilemapLayer = this;
-                        tile.IdOnTilemap = i;
+                    Tile tile = new Tile(GetTexture2D(), worldPos, spriteRectangle, new Vector2(xPos, yPos));
+                    tile.TilemapLayer = this;
+                    tile.IdOnTilemap = i;
 
-                        
+                    list.Add(tile);
 
-                        tiles.Add(tile);
-                    }
                 }
-
-                this.tiles = tiles;
-            }
-            else
-            {
-                tiles = this.tiles;
             }
 
-            return tiles;
+            return list;
         }
     }
 }

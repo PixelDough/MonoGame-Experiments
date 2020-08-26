@@ -20,8 +20,6 @@ namespace MonoGame_Experiments
         private Vector2 _position = Vector2.Zero;
         private Vector2 _localPosition = Vector2.Zero;
 
-        public static List<Collider> Colliders = new List<Collider>();
-
         public Color DebugColor = Color.Red;
         public int Width { get; set; }
         public int Height { get; set; }
@@ -33,7 +31,6 @@ namespace MonoGame_Experiments
             Height = height;
             _localPosition = localPosition;
 
-            Colliders.Add(this);
         }
 
         public int Top
@@ -139,7 +136,7 @@ namespace MonoGame_Experiments
             }
         }
 
-        public bool CollideAt(List<IRigidbody> targets, Vector2 position, bool includeTilemap = false)
+        public bool CollideAt(List<IRigidbody> targets, Vector2 position, bool includeTilemap = false, Tilemap tilemap = null)
         {
             //float dist = Vector2.Distance(Position, position);
             Vector2 relativePos = position - Position;
@@ -157,9 +154,9 @@ namespace MonoGame_Experiments
                 }
             }
 
-            if (includeTilemap)
+            if (includeTilemap && tilemap != null)
             {
-                foreach (TilemapLayer layer in Tile.CurrentTilemap.layers)
+                foreach (TilemapLayer layer in tilemap.layers)
                 {
                     if (layer.dataCoords == null) continue;
                     int left_tile = (int)MathF.Floor((Left + relativePos.X) / layer.gridCellWidth);

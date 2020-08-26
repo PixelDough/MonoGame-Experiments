@@ -8,6 +8,7 @@ namespace MonoGame_Experiments.Components
 {
     public class MovingBlock : Solid
     {
+        private float _timePosition = 0;
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
@@ -21,7 +22,9 @@ namespace MonoGame_Experiments.Components
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            Move(0f, MathF.Sin((float)gameTime.TotalGameTime.TotalSeconds * 5) * 5);
+
+            _timePosition += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Move(0f, MathF.Sin(_timePosition * 5) * 5);
         }
     }
 }

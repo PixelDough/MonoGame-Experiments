@@ -14,8 +14,8 @@ namespace MonoGame_Experiments.Components
         public TilemapLayer TilemapLayer;
         public int IdOnTilemap = -1;
         public Vector2 GridPositionOnTilemap { get; private set; }
-        public static Tilemap CurrentTilemap { get; set; }
-        public static RenderTarget2D CurrentTilemapRenderTarget2D { get; set; }
+        //public static Tilemap CurrentTilemap { get; set; }
+        //public static RenderTarget2D CurrentTilemapRenderTarget2D { get; set; }
 
         private Texture2D _texture;
         private Vector2 _position;

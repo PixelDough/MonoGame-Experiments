@@ -8,24 +8,27 @@ namespace MonoGame_Experiments.Scenes
     class SceneMenu : Scene
     {
 
+        private RenderTarget2D _tileRenderTarget;
+        private Tilemap _currentTilemap;
+
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Tile.CurrentTilemapRenderTarget2D, Vector2.Zero, Color.White);
+            spriteBatch.Draw(_tileRenderTarget, Vector2.Zero, Color.White);
             foreach (Entity gameObject in gameObjects.ToArray())
                 gameObject.Draw(spriteBatch);
         }
 
         public override void Initialize()
         {
-            Tile.CurrentTilemapRenderTarget2D = new RenderTarget2D(Game.Graphics.GraphicsDevice, 512, 512);
+            _tileRenderTarget = new RenderTarget2D(Game.Graphics.GraphicsDevice, 512, 512);
             Game.ScreenManager.SpriteBatch.GraphicsDevice.Clear(new Color(0, 0, 0, 0));
-            Game.ScreenManager.SpriteBatch.GraphicsDevice.SetRenderTarget(Tile.CurrentTilemapRenderTarget2D);
+            Game.ScreenManager.SpriteBatch.GraphicsDevice.SetRenderTarget(_tileRenderTarget);
             Game.ScreenManager.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
             Game.Graphics.GraphicsDevice.Clear(Color.Transparent);
             Tilemap tilemap = OgmoTilemapManager.LoadLevelData("Level1");
             if (tilemap != null)
             {
-                Tile.CurrentTilemap = tilemap;
+                _currentTilemap = tilemap;
                 foreach (TilemapLayer layer in tilemap.layers)
                 {
                     if (layer.tileset != null)
@@ -56,10 +59,10 @@ namespace MonoGame_Experiments.Scenes
             gameObjects.Add(movingBlock);
 
             Random random = new Random();
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 0; i++)
             {
-                float randomX = random.Next(0, Tile.CurrentTilemap.width - 16);
-                float randomY = random.Next(0, Tile.CurrentTilemap.height - 16);
+                float randomX = random.Next(0, _currentTilemap.width - 16);
+                float randomY = random.Next(0, _currentTilemap.height - 16);
                 Entity flyingBubble = new Entity(new Vector2(randomX, randomY));
 
                 float randomDirX = random.Next(2) == 0 ? -1 : 1;

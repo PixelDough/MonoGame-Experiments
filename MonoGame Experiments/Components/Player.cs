@@ -117,7 +117,7 @@ namespace MonoGame_Experiments.Components
 
             _coyoteTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             _isGrounded = false;
-            if (Collider.CollideAt(Solid.Solids, Collider.Position + Vector2.UnitY, true))
+            if (Collider.CollideAt(Game._currentScene.Solids, Collider.Position + Vector2.UnitY, true))
             {
                 _coyoteTime = _coyoteTimeMax;
                 _isGrounded = true;
