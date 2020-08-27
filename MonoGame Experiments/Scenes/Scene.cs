@@ -40,6 +40,13 @@ namespace MonoGame_Experiments.Scenes
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 // TODO: set large fields to null
+                foreach(Entity entity in gameObjects)
+                {
+                    entity.Dispose();
+                }
+                gameObjects.Clear();
+                EntitiesToDestroy.Clear();
+
                 disposedValue = true;
             }
         }

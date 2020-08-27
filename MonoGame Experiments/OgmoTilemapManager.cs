@@ -13,7 +13,7 @@ namespace MonoGame_Experiments
     public class OgmoTilemapManager
     {
 
-        private static Dictionary<int, Vector2> bitmaskTilePositions = new Dictionary<int, Vector2>()
+        private static readonly Dictionary<int, Vector2> bitmaskTilePositions = new Dictionary<int, Vector2>()
         {
             { 20,   new Vector2(0, 0) },
             { 68,   new Vector2(1, 0) },
@@ -180,17 +180,48 @@ namespace MonoGame_Experiments
 
     }
 
-    public class Tilemap
+    public class Tilemap : IDisposable
     {
+        private bool disposedValue;
+
         public string ogmoVersion { get; set; }
         public int width { get; set; }
         public int height { get; set; }
         public int offsetX { get; set; }
         public int offsetY { get; set; }
         public TilemapLayer[] layers { get; set; }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~Tilemap()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 
-    public class TilemapLayer
+    public class TilemapLayer : IDisposable
     {
         public string name { get; set; }
         public string _eid { get; set; }
@@ -223,6 +254,8 @@ namespace MonoGame_Experiments
         }
 
         private Texture2D tilesetTexture;
+        private bool disposedValue;
+
         //private List<Tile> tiles = new List<Tile>();
         public Texture2D GetTexture2D()
         {
@@ -272,6 +305,35 @@ namespace MonoGame_Experiments
             }
 
             return list;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~TilemapLayer()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

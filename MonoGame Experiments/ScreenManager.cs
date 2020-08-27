@@ -38,7 +38,9 @@ namespace MonoGame_Experiments
             _game.IsFixedTimeStep = true;
             _game.TargetElapsedTime = TimeSpan.FromSeconds(1f / 60);
 
+            SpriteBatch?.Dispose();
             SpriteBatch = spriteBatch;
+            RenderTarget?.Dispose();
             RenderTarget = new RenderTarget2D(graphicsDeviceManager.GraphicsDevice, _width, _height);
             RenderScale = 4;
 

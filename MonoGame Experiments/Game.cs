@@ -50,13 +50,13 @@ namespace MonoGame_Experiments
 
         protected override void LoadContent()
         {
+            _spriteBatch?.Dispose();
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             ScreenManager = new ScreenManager(this, 320, 180);
             ScreenManager.Init(Graphics, Window, _spriteBatch);
             ScreenManager.UpdateRenderRectangle(Window);
 
-            _currentScene = new SceneMenu();
 
         }
 
@@ -71,11 +71,13 @@ namespace MonoGame_Experiments
             {
                 if (_currentScene == null)
                 {
+                    _currentScene?.Dispose();
                     _currentScene = new SceneMenu();
                     GC.Collect();
                 }
                 else
                 {
+                    _currentScene?.Dispose();
                     _currentScene = null;
                     GC.Collect();
                 }
@@ -101,7 +103,7 @@ namespace MonoGame_Experiments
             // TODO: Make a more robust layering system. Use multiple spriteBatches, and some way of collecting anything that needs to be drawn using a certain spriteBatch. Maybe make a manager class.
             // Tip: FrontToBack: 1f = Front, 0f = Back
             _spriteBatch.Begin(transformMatrix: Camera.TransformationMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, sortMode: SpriteSortMode.FrontToBack);
-            GraphicsDevice.SetRenderTarget(ScreenManager.RenderTarget);
+            GraphicsDevice.SetRenderTargets(ScreenManager.RenderTarget);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _currentScene?.Draw(_spriteBatch);
@@ -124,7 +126,7 @@ namespace MonoGame_Experiments
             //partRectangle.Width = (int)MathF.Round(Camera.Viewport.Width / Camera.Zoom);
             //partRectangle.Height = (int)MathF.Round(Camera.Viewport.Height / Camera.Zoom);
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.SetRenderTargets(null);
             _spriteBatch.Draw(ScreenManager.RenderTarget, ScreenManager.RenderRectangle, Color.White);
             _spriteBatch.End();
         }

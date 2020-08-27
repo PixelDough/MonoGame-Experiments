@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MonoGame_Experiments.Interfaces
 {
-    public interface IRigidbody
+    public interface IRigidbody : IDisposable
     {
         public Collider Collider { get; }
         public bool MoveX(float amount, Action onCollide);

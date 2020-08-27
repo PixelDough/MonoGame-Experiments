@@ -93,9 +93,15 @@ namespace MonoGame_Experiments
         {
             if (_destroyed)
             {
+                foreach (Entity child in _children.ToArray())
+                {
+                    Entity.Destroy(child);
+                    _children.Remove(child);
+                }
                 foreach (Component component in _components.ToArray())
                 {
                     component.OnDestroy();
+                    _components.Remove(component);
                 }
 
                 // TODO: Write a scene manager class with ability to remove entities from the current scene.
@@ -174,6 +180,11 @@ namespace MonoGame_Experiments
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 transform.OnMoveEvent = null;
+                foreach (Entity entity in _children)
+                    entity.Dispose();
+                foreach (Component component in _components)
+                    component.Dispose();
+
                 // TODO: set large fields to null
                 disposedValue = true;
             }

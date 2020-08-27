@@ -50,5 +50,12 @@ namespace MonoGame_Experiments.Components
         {
             //_position = _baseObject.transform.Position + _localPosition;
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            //_texture.Dispose();
+        }
     }
 }
