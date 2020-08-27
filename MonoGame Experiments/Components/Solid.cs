@@ -10,40 +10,49 @@ namespace MonoGame_Experiments.Components
 {
     public class Solid : Component, IRigidbody
     {
-
+        public enum SolidTypes
+        {
+            Block,
+            Tilemap
+        }
+        public SolidTypes SolidType = SolidTypes.Block;
         public Collider Collider { get { return _entity.GetComponent<Collider>(); } }
         private bool _active = false;
 
-        public Solid()
+        public Solid(SolidTypes solidType)
         {
-            //Solids.Add(this);
+            SolidType = solidType;
         }
 
         public override void Update(GameTime gameTime)
         {
-            float myDiagLengthSquared = (Collider.Width * Collider.Width) + (Collider.Height * Collider.Height);
+            if (!Game._currentScene.Solids.Contains(this))
+            {
+                Game._currentScene.Solids.Add(this);
+            }
+            //float myDiagLengthSquared = (Collider.Width * Collider.Width) + (Collider.Height * Collider.Height);
 
-            _active = false;
-            foreach (Actor actor in Game._currentScene.Actors)
-            {
-                float diagLengthSquared = (float)Math.Pow(actor.Collider.Width, 2) + (float)Math.Pow(actor.Collider.Height, 2);
-                float dist = Vector2.DistanceSquared(Collider.Center, actor.Collider.Center);
-                if (dist <= diagLengthSquared + myDiagLengthSquared + 10)
-                {
-                    _active = true;
-                }
-            }
+            //_active = false;
+            //foreach (Actor actor in Game._currentScene.Actors)
+            //{
+            //    float diagLengthSquared = (float)Math.Pow(actor.Collider.Width, 2) + (float)Math.Pow(actor.Collider.Height, 2);
+            //    float dist = Vector2.DistanceSquared(Collider.Center, actor.Collider.Center);
+            //    if (dist <= diagLengthSquared + myDiagLengthSquared + 10)
+            //    {
+            //        _active = true;
+            //    }
+            //}
 
-            if (_active)
-            {
-                Collider.DebugColor = Color.Red;
-                if (!Game._currentScene.Solids.Contains(this)) Game._currentScene.Solids.Add(this);
-            }
-            else
-            {
-                Collider.DebugColor = Color.DarkRed;
-                if (Game._currentScene.Solids.Contains(this)) Game._currentScene.Solids.Remove(this);
-            }
+            //if (_active)
+            //{
+            //    Collider.DebugColor = Color.Red;
+            //    if (!Game._currentScene.Solids.Contains(this)) Game._currentScene.Solids.Add(this);
+            //}
+            //else
+            //{
+            //    Collider.DebugColor = Color.DarkRed;
+            //    if (Game._currentScene.Solids.Contains(this)) Game._currentScene.Solids.Remove(this);
+            //}
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -194,6 +203,7 @@ namespace MonoGame_Experiments.Components
             base.OnDestroy();
 
             Game._currentScene.Solids.Remove(this);
+            Dispose();
         }
     }
 }

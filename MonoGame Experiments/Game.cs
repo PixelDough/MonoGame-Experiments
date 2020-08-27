@@ -73,7 +73,6 @@ namespace MonoGame_Experiments
                 {
                     _currentScene?.Dispose();
                     _currentScene = new SceneMenu();
-                    GC.Collect();
                 }
                 else
                 {

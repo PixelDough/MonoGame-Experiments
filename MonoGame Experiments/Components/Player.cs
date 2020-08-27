@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace MonoGame_Experiments.Components
@@ -13,6 +14,7 @@ namespace MonoGame_Experiments.Components
         private Vector2 _velocity = Vector2.Zero;
         private Vector2 _positionCheck = Vector2.Zero;
         private Vector2 _positionLast = Vector2.Zero;
+        private Queue<float> _previousSpeeds = new Queue<float>(10);
 
         private Sprite _sprite;
 
@@ -63,6 +65,8 @@ namespace MonoGame_Experiments.Components
 
             _positionLast = _positionCheck;
             _positionCheck = Transform.Position;
+            _previousSpeeds.Enqueue(Vector2.Distance(_positionCheck, _positionLast));
+            if (_previousSpeeds.Count > 10) _previousSpeeds.Dequeue();
 
             float moveAmountX = 0;
             if (Input.IsInputDown(new List<Keys> { Keys.Left, Keys.A }, new List<Buttons> { Buttons.DPadLeft, Buttons.LeftThumbstickLeft }))
@@ -110,9 +114,9 @@ namespace MonoGame_Experiments.Components
 
             Transform.Rotation += MathHelper.ToRadians(1);
 
-            MoveY(_velocity.Y, OnCollideY, 4);
+            MoveY(_velocity.Y * 60 * (float)gameTime.ElapsedGameTime.TotalSeconds, OnCollideY, 4);
             Collider.Update(gameTime);
-            MoveX(_velocity.X, OnCollideX);
+            MoveX(_velocity.X * 60 * (float)gameTime.ElapsedGameTime.TotalSeconds, OnCollideX);
             Collider.Update(gameTime);
 
             _coyoteTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -127,7 +131,7 @@ namespace MonoGame_Experiments.Components
 
         private void Jump()
         {
-            _velocity.Y = -4 + ((_positionCheck - _positionLast).Y / 1.5f);
+            _velocity.Y = -4 + ((MathF.Sign(_positionCheck.Y - _positionLast.Y) * _previousSpeeds.Max()) / 1.5f);
             _coyoteTime = 0f;
             _jumpBufferTime = 0f;
             _isGrounded = false;

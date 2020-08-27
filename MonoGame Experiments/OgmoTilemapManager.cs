@@ -65,7 +65,7 @@ namespace MonoGame_Experiments
             { 64,   new Vector2(7, 5) }
         };
 
-        public static Tilemap LoadLevelData(string tilesetFileName)
+        public static OgmoTilemap LoadLevelData(string tilesetFileName)
         {
             if (tilesetFileName.EndsWith(".json"))
                 tilesetFileName = tilesetFileName.Remove(tilesetFileName.Length - 5);
@@ -80,7 +80,7 @@ namespace MonoGame_Experiments
 
                     //string result = string.Empty;
                     //result = streamReader.ReadToEnd();
-                    Tilemap tilemap = JsonSerializer.Deserialize(result, typeof(Tilemap)) as Tilemap;
+                    OgmoTilemap tilemap = JsonSerializer.Deserialize(result, typeof(OgmoTilemap)) as OgmoTilemap;
 
                     return tilemap;
                 }
@@ -180,7 +180,7 @@ namespace MonoGame_Experiments
 
     }
 
-    public class Tilemap : IDisposable
+    public class OgmoTilemap : IDisposable
     {
         private bool disposedValue;
 

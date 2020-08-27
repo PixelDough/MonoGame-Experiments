@@ -24,9 +24,9 @@ namespace MonoGame_Experiments.Components
 
 
             Vector2 pos = Collider.Position;
-            MoveY(_direction.Y * _speed, HitY);
+            MoveY(_direction.Y * _speed * (float)gameTime.ElapsedGameTime.TotalSeconds * 60, HitY);
             Collider.Update(gameTime);
-            MoveX(_direction.X * _speed, HitX);
+            MoveX(_direction.X * _speed * (float)gameTime.ElapsedGameTime.TotalSeconds * 60, HitX);
             Collider.Update(gameTime);
 
             if (pos == Collider.Position)

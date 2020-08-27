@@ -136,12 +136,43 @@ namespace MonoGame_Experiments
             }
         }
 
-        public bool CollideAt(List<IRigidbody> targets, Vector2 position, bool includeTilemap = false, Tilemap tilemap = null)
+        public bool CollideAt(List<IRigidbody> targets, Vector2 position, bool includeTilemap = false, OgmoTilemap tilemap = null)
         {
             //float dist = Vector2.Distance(Position, position);
             Vector2 relativePos = position - Position;
             foreach(IRigidbody rigidbody in targets)
             {
+                if (rigidbody is Tilemap)
+                {
+                    foreach (TilemapLayer layer in ((Tilemap)rigidbody).TilemapData.layers)
+                    {
+                        if (layer.dataCoords == null) continue;
+                        int left_tile = (int)MathF.Floor((Left + relativePos.X) / layer.gridCellWidth);
+                        int right_tile = (int)MathF.Floor((Right + relativePos.X) / layer.gridCellWidth);
+                        int top_tile = (int)MathF.Floor((Top + relativePos.Y) / layer.gridCellHeight);
+                        int bottom_tile = (int)MathF.Floor((Bottom + relativePos.Y) / layer.gridCellHeight);
+
+                        if (left_tile < 0) left_tile = 0;
+                        if (right_tile > layer.gridCellsX) right_tile = layer.gridCellsX;
+                        if (top_tile < 0) top_tile = 0;
+                        if (bottom_tile > layer.gridCellsY) bottom_tile = layer.gridCellsY;
+
+                        for (int xx = left_tile; xx <= right_tile; xx++)
+                        {
+                            for (int yy = top_tile; yy <= bottom_tile; yy++)
+                            {
+                                int[] tileData = layer.dataCoords[xx + (yy * layer.gridCellsX)];
+                                if (tileData[0] != -1)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    continue;
+                }
+
                 // I am stupid and forgot to put this in. No wonder my moving solids were preventing the actors from moving when being pushed!
                 if (!rigidbody.Collider.Collidable) { continue; }
 
@@ -151,35 +182,6 @@ namespace MonoGame_Experiments
                     && this.Bottom + relativePos.Y >= rigidbody.Collider.Top)
                 {
                     return true;
-                }
-            }
-
-            if (includeTilemap && tilemap != null)
-            {
-                foreach (TilemapLayer layer in tilemap.layers)
-                {
-                    if (layer.dataCoords == null) continue;
-                    int left_tile = (int)MathF.Floor((Left + relativePos.X) / layer.gridCellWidth);
-                    int right_tile = (int)MathF.Floor((Right + relativePos.X) / layer.gridCellWidth);
-                    int top_tile = (int)MathF.Floor((Top + relativePos.Y) / layer.gridCellHeight);
-                    int bottom_tile = (int)MathF.Floor((Bottom + relativePos.Y) / layer.gridCellHeight);
-
-                    if (left_tile < 0) left_tile = 0;
-                    if (right_tile > layer.gridCellsX) right_tile = layer.gridCellsX;
-                    if (top_tile < 0) top_tile = 0;
-                    if (bottom_tile > layer.gridCellsY) bottom_tile = layer.gridCellsY;
-
-                    for (int xx = left_tile; xx <= right_tile; xx++)
-                    {
-                        for (int yy = top_tile; yy <= bottom_tile; yy++)
-                        {
-                            int[] tileData = layer.dataCoords[xx + (yy * layer.gridCellsX)];
-                            if (tileData[0] != -1)
-                            {
-                                return true;
-                            }
-                        }
-                    }
                 }
             }
 

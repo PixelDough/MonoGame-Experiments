@@ -10,7 +10,7 @@ namespace MonoGame_Experiments.Components
 {
     public class Tile : Component
     {
-        public Tilemap Tilemap;
+        public OgmoTilemap Tilemap;
         public TilemapLayer TilemapLayer;
         public int IdOnTilemap = -1;
         public Vector2 GridPositionOnTilemap { get; private set; }
