@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.VisualBasic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame_Experiments.Scenes;
@@ -15,11 +16,12 @@ namespace MonoGame_Experiments
         private static List<string> _previousStrings = new List<string>();
         private static int _previousStringsMax = 20;
 
-        private static SpriteFont spriteFont = ContentHandler.Instance.Load<SpriteFont>("Fonts/system");
+        private static SpriteFont spriteFont = ContentHandler.Instance.Load<SpriteFont>("Fonts/monogram24");
 
         public static List<Command> Commands = new List<Command>()
         {
             new Command("help", Help),
+            new Command("print", (x) => _previousStrings.Add(string.Join(" ", x))),
             new Command("load", LoadLevel),
             new Command("cls", (x) => _previousStrings.Clear()),
             new Command("reload", (x) => Game.ChangeScenes(Game._currentScene)),
@@ -67,7 +69,7 @@ namespace MonoGame_Experiments
                 string[] parameters = inputs.ToArray();
 
                 Command command = Commands.Find(c => c.Name == commandName);
-                if (command.Action == null) throw new Exception("ERROR: Command \"" + commandName + "\" not found!");
+                if (command.Action == null) throw new Exception("[c:#FF0000]ERROR: Command \"" + commandName + "\" not found!");
 
                 if (parameters.Contains("-c"))
                     Game.DebugMode = false;
@@ -90,7 +92,42 @@ namespace MonoGame_Experiments
             for (int i = 0; i < _previousStrings.Count; i++)
             {
                 string s = _previousStrings[i];
-                spriteBatch.DrawString(spriteFont, s, new Vector2(4, Game.Graphics.PreferredBackBufferHeight - spriteFont.LineSpacing - 32 - ((_previousStrings.Count - 1 - i) * 24)), Color.Gray);
+
+                Vector2 position = new Vector2(4, Game.Graphics.PreferredBackBufferHeight - spriteFont.LineSpacing - ((_previousStrings.Count - i) * spriteFont.MeasureString(s).Y));
+                if (s.Contains("[c:"))
+                {
+                    int currentOffset = 0;
+                    string[] splits = s.Split(new string[] { "[c:" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string str in splits)
+                    {
+                        if (str.StartsWith("#"))
+                        {
+                            string color = str.Substring(0, 7);
+
+                            string[] msgs = str.Substring(8).Split(new string[] { "[/c]" }, StringSplitOptions.RemoveEmptyEntries);
+
+                            System.Drawing.Color clrColor = System.Drawing.ColorTranslator.FromHtml(color);
+                            Color xColor = new Color(clrColor.R, clrColor.G, clrColor.B, clrColor.A);
+                            spriteBatch.DrawString(spriteFont, msgs[0], position + Vector2.UnitX * currentOffset, xColor);
+                            currentOffset += (int)spriteFont.MeasureString(msgs[0]).X;
+
+                            if (msgs.Length == 2)
+                            {
+                                spriteBatch.DrawString(spriteFont, msgs[1], position + Vector2.UnitX * currentOffset, Color.Gray);
+                                currentOffset += (int)spriteFont.MeasureString(msgs[1]).X;
+                            }
+                        }
+                        else
+                        {
+                            spriteBatch.DrawString(spriteFont, str, position + Vector2.UnitX * currentOffset, Color.Gray);
+                            currentOffset += (int)spriteFont.MeasureString(str).X;
+                        }
+                    }
+                }
+                else
+                {
+                    spriteBatch.DrawString(spriteFont, s, position, Color.Gray);
+                }
             }
 
             spriteBatch.DrawString(spriteFont, "> " + _currentString, new Vector2(4, Game.Graphics.PreferredBackBufferHeight - spriteFont.LineSpacing), Color.White);

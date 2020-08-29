@@ -33,6 +33,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/monogram.spritefont
 
+#begin Fonts/monogram24.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/monogram24.spritefont
+
 #begin Fonts/system.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
