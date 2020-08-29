@@ -15,18 +15,24 @@ namespace MonoGame_Experiments
         public bool Collidable { get; set; } = true;
         public Vector2 Position
         {
-            get { return Vector2.Round(Transform.Position + _localPosition); }
-            set { _position = Vector2.Round(value); }
+            get { return Vector2.Round(Transform.Position + LocalPosition); }
+            set { _position = Vector2.Round(value + LocalPosition); }
         }
         private Vector2 _position = Vector2.Zero;
+
         private Vector2 _localPosition = Vector2.Zero;
+        public Vector2 LocalPosition
+        {
+            get { return Vector2.Round(_localPosition); }
+            set { _localPosition = Vector2.Round(value); }
+        }
 
         public Color DebugColor = Color.Red;
         public int Width { get; set; }
         public int Height { get; set; }
         public CollisionResult CollisionResults;
 
-        public Collider(Vector2 localPosition, int width, int height)
+        public Collider(Entity entity, Vector2 localPosition, int width, int height) : base(entity)
         {
             Width = width;
             Height = height;

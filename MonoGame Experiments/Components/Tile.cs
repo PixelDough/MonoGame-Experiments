@@ -26,7 +26,7 @@ namespace MonoGame_Experiments.Components
         private Rectangle _spriteRectangle;
         public Rectangle SpriteRectangle { get { return _spriteRectangle; } }
 
-        public Tile(Texture2D texture, Vector2 position, Rectangle spriteRectangle, Vector2 gridPositionOnTilemap) : base()
+        public Tile(Entity entity, Texture2D texture, Vector2 position, Rectangle spriteRectangle, Vector2 gridPositionOnTilemap) : base(entity)
         {
             _texture = texture;
             _position = position;

@@ -9,7 +9,13 @@ namespace MonoGame_Experiments
     public abstract class Component : IDisposable
     {
         protected Entity _entity;
+        public Entity Entity { get { return _entity; } }
         private bool disposedValue;
+
+        public Component(Entity entity)
+        {
+            _entity = entity;
+        }
 
         public Entity.Transform Transform
         {

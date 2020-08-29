@@ -18,7 +18,7 @@ namespace MonoGame_Experiments.Components
 
         public bool FlipX = false;
 
-        public Sprite(Texture2D texture, int width, int height, Vector2 localPosition, float depth = 1f, Rectangle? spriteRectangle = null)
+        public Sprite(Entity entity, Texture2D texture, int width, int height, Vector2 localPosition, float depth = 1f, Rectangle? spriteRectangle = null) : base(entity)
         {
             _texture = texture;
             _width = width;

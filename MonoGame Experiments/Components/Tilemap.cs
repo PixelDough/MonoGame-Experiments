@@ -10,7 +10,7 @@ namespace MonoGame_Experiments.Components
     {
         public RenderTarget2D RenderTarget2D;
         public OgmoTilemap TilemapData;
-        public Tilemap(string tilemapName) : base(SolidTypes.Tilemap)
+        public Tilemap(Entity entity, string tilemapName) : base(entity, SolidTypes.Tilemap)
         {
             using (OgmoTilemap tilemap = OgmoTilemapManager.LoadLevelData(tilemapName))
             {

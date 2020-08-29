@@ -295,7 +295,7 @@ namespace MonoGame_Experiments
                     spriteRectangle.X = (int)bitPosOnTilemap.X;
                     spriteRectangle.Y = (int)bitPosOnTilemap.Y;
 
-                    Tile tile = new Tile(GetTexture2D(), worldPos, spriteRectangle, new Vector2(xPos, yPos));
+                    Tile tile = new Tile(null, GetTexture2D(), worldPos, spriteRectangle, new Vector2(xPos, yPos));
                     tile.TilemapLayer = this;
                     tile.IdOnTilemap = i;
 

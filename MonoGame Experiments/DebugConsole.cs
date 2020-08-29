@@ -4,10 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame_Experiments.Scenes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading;
 
 namespace MonoGame_Experiments
 {
@@ -15,16 +13,19 @@ namespace MonoGame_Experiments
     {
         private static string _currentString = "";
         private static List<string> _previousStrings = new List<string>();
+        private static int _previousStringsMax = 20;
 
         private static SpriteFont spriteFont = ContentHandler.Instance.Load<SpriteFont>("Fonts/system");
 
-        public static List<Command> commands = new List<Command>()
+        public static List<Command> Commands = new List<Command>()
         {
-            new Command("bobby", Bobby),
+            new Command("help", Help),
             new Command("load", LoadLevel),
-            new Command("cls", CLS),
-            new Command("reload", delegate(string[] parameters) { Game.ChangeScenes(Game._currentScene); }),
-            new Command("colliders", delegate(string[] parameters) { DebugManager.ShowCollisionRectangles = !DebugManager.ShowCollisionRectangles; }),
+            new Command("cls", (x) => _previousStrings.Clear()),
+            new Command("reload", (x) => Game.ChangeScenes(Game._currentScene)),
+            new Command("colliders", (x) => DebugManager.ShowCollisionRectangles = !DebugManager.ShowCollisionRectangles),
+            new Command("rick", (x) => OpenLink("https://www.youtube.com/watch?v=dQw4w9WgXcQ")),
+            new Command("aha", (x) => OpenLink("https://youtu.be/djV11Xbc914?t=3")),
         };
 
         public static void TextInputHandler(object sender, TextInputEventArgs args)
@@ -65,8 +66,11 @@ namespace MonoGame_Experiments
                 string commandName = inputs.Dequeue();
                 string[] parameters = inputs.ToArray();
 
-                Command command = commands.Find(c => c.Name == commandName);
+                Command command = Commands.Find(c => c.Name == commandName);
                 if (command.Action == null) throw new Exception("ERROR: Command \"" + commandName + "\" not found!");
+
+                if (parameters.Contains("-c"))
+                    Game.DebugMode = false;
                 command.Action?.Invoke(parameters);
             }
             catch(Exception e)
@@ -74,7 +78,7 @@ namespace MonoGame_Experiments
                 _previousStrings.Add(e.Message);
             }
 
-            while (_previousStrings.Count > 10)
+            while (_previousStrings.Count > _previousStringsMax)
                 _previousStrings.RemoveAt(0);
 
             _currentString = "";
@@ -93,22 +97,31 @@ namespace MonoGame_Experiments
             spriteBatch.DrawString(spriteFont, "|", new Vector2(4 + spriteFont.MeasureString("> " + _currentString).X, Game.Graphics.PreferredBackBufferHeight - spriteFont.LineSpacing), Color.White);
         }
 
+
+        public delegate void CommandAction(params string[] args);
         public struct Command
         {
             public string Name;
-            public Action<string[]?> Action;
+            public CommandAction Action;
             
-            public Command(string name, Action<string[]> action)
+            public Command(string name, CommandAction action)
             {
                 Name = name;
                 Action = action;
             }
         }
 
-        public static void Bobby(params string[] paramList)
+        public static void Help(params string[] paramList)
         {
-            _previousStrings.Add("jones nevachange lezgomin: " + paramList[0]);
-            Game.ChangeScenes(new SceneMenu());
+            Commands = Commands.OrderBy(x => x.Name).ToList();
+            if (paramList.Length == 0)
+            {
+                _previousStrings.Add("-----HELP-----");
+                foreach (var command in Commands)
+                {
+                    _previousStrings.Add(command.Name);
+                }
+            }
         }
 
         public static void LoadLevel(params string[] paramList)
@@ -119,9 +132,13 @@ namespace MonoGame_Experiments
             Game.ChangeScenes(scene);
         }
 
-        public static void CLS(params string[] paramList)
+        public static void OpenLink(string link)
         {
-            _previousStrings.Clear();
+            var ps = new ProcessStartInfo(link)
+            {
+                UseShellExecute = true
+            };
+            Process.Start(ps);
         }
     }
 }

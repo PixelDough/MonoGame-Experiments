@@ -97,6 +97,9 @@ namespace MonoGame_Experiments
             }
             RenderRectangle = dst;
             RenderScale = scale;
+
+            Game.Graphics.PreferredBackBufferWidth = window.ClientBounds.Width;
+            Game.Graphics.PreferredBackBufferHeight = window.ClientBounds.Height;
         }
 
         private void ChangeWindowSize(int width, int height)

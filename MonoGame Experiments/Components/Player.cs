@@ -36,9 +36,14 @@ namespace MonoGame_Experiments.Components
             }
         }
 
-        public Player() : base()
+        public Player(Entity entity) : base(entity)
         {
-
+            Collider.LocalPosition = new Vector2(1, 3);
+            Collider.Width = 14;
+            Collider.Height = 13;
+            
+            Texture2D texture = ContentHandler.Instance.Load<Texture2D>("Sprites/SlimeCube");
+            entity.AddComponent(new Sprite(entity, texture, texture.Width, texture.Height, Vector2.Zero, .5f));
         }
 
         public override void Awake()

@@ -22,8 +22,23 @@ namespace MonoGame_Experiments.Scenes
         }
 
         public abstract void Initialize();
-        public abstract void Update(GameTime gameTime);
-        public abstract void Draw(SpriteBatch spriteBatch);
+        public virtual void Update(GameTime gameTime)
+        {
+            foreach (Entity gameObject in gameObjects.ToArray())
+                gameObject.PreUpdate(gameTime);
+
+            if (Game.DebugMode) return;
+            foreach (Entity gameObject in gameObjects.ToArray())
+                gameObject.Update(gameTime);
+
+            foreach (Entity gameObject in gameObjects.ToArray())
+                gameObject.LateUpdate(gameTime);
+        }
+        public virtual void Draw(SpriteBatch spriteBatch)
+        {
+            foreach (Entity gameObject in gameObjects)
+                gameObject.Draw(spriteBatch);
+        }
         public virtual void DebugDraw(SpriteBatch spriteBatch) 
         { 
 

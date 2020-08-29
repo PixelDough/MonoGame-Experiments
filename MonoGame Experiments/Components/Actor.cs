@@ -2,14 +2,12 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame_Experiments.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MonoGame_Experiments.Components
 {
     // The actor class itself has no concept of it's own speed, velocity, or gravity.
     // Classes that extend the Actor class keep track of those things.
-    public class Actor : Component, IRigidbody
+    public abstract class Actor : Component, IRigidbody
     {
         private Collider _collider;
         public Collider Collider {
@@ -22,21 +20,24 @@ namespace MonoGame_Experiments.Components
                     return _collider;
                 }
             }
+            private set
+            {
+                _collider = value;
+            }
         }
 
         private float _velocityCap = 10f;
 
-        public Actor()
+        public Actor(Entity entity) : base(entity)
         {
-
+            Collider = (Collider)entity.AddComponent(new Collider(entity, Vector2.Zero, 16, 16));
+            Collider.DebugColor = Color.LawnGreen;
         }
 
         public override void Awake()
         {
             base.Awake();
-
             Game._currentScene.Actors.Add(this);
-            Collider.DebugColor = Color.LawnGreen;
         }
 
         public override void Update(GameTime gameTime)

@@ -16,21 +16,40 @@ namespace MonoGame_Experiments.Components
             Tilemap
         }
         public SolidTypes SolidType = SolidTypes.Block;
-        public Collider Collider { get { return _entity.GetComponent<Collider>(); } }
-        private bool _active = false;
 
-        public Solid(SolidTypes solidType)
+        private Collider _collider;
+        public Collider Collider
+        {
+            get
+            {
+                if (_collider != null) return _collider;
+                else
+                {
+                    _collider = _entity.GetComponent<Collider>();
+                    return _collider;
+                }
+            }
+            private set
+            {
+                _collider = value;
+            }
+        }
+
+        public Solid(Entity entity, SolidTypes solidType) : base(entity)
         {
             SolidType = solidType;
+
+            if (SolidType == SolidTypes.Block)
+            {
+                Collider = (Collider)entity.AddComponent(new Collider(entity, Vector2.Zero, 16, 16));
+                Collider.DebugColor = Color.Red;
+            }
         }
 
         public override void Awake()
         {
             base.Awake();
-            if (!Game._currentScene.Solids.Contains(this))
-            {
-                Game._currentScene.Solids.Add(this);
-            }
+            Game._currentScene.Solids.Add(this);
         }
 
         public override void Update(GameTime gameTime)

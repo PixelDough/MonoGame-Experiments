@@ -11,7 +11,7 @@ namespace MonoGame_Experiments.Components
         private float _timePosition = 0;
         private Vector2 _startPosition = Vector2.Zero;
 
-        public MovingBlock() : base(SolidTypes.Block)
+        public MovingBlock(Entity entity) : base(entity, SolidTypes.Block)
         {
 
         }
