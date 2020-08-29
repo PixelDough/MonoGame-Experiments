@@ -27,6 +27,7 @@ namespace MonoGame_Experiments
 
         public static Camera2D Camera;
         public static bool DebugMode = false;
+        public static bool Paused = false;
 
         // TODO: Make a tilemap manager
 
@@ -57,7 +58,7 @@ namespace MonoGame_Experiments
             ScreenManager.Init(Graphics, Window, _spriteBatch);
             ScreenManager.UpdateRenderRectangle(Window);
 
-
+            Window.TextInput += DebugConsole.TextInputHandler;
         }
 
         protected override void Update(GameTime gameTime)
@@ -67,27 +68,11 @@ namespace MonoGame_Experiments
 
             Input.Update(gameTime);
 
-            if (Input.IsKeyPressed(Keys.R))
-            {
-                if (_currentScene == null)
-                {
-                    _currentScene?.Dispose();
-                    _currentScene = new SceneMenu();
-                }
-                else
-                {
-                    _currentScene?.Dispose();
-                    _currentScene = null;
-                    GC.Collect();
-                }
-                
-            }
-
             if (Input.IsKeyPressed(Keys.F11))
             {
                 ScreenManager.ToggleFullScreen();
             }
-            if (Input.IsKeyPressed(Keys.F4) || (Input.IsInputDown(buttons: new List<Buttons>() { Buttons.Back }) && Input.IsInputPressed(buttons: new List<Buttons>() { Buttons.Y })))
+            if (Input.IsKeyPressed(Keys.F4))
             {
                 DebugMode = !DebugMode;
             }
@@ -101,13 +86,12 @@ namespace MonoGame_Experiments
         {
             // TODO: Make a more robust layering system. Use multiple spriteBatches, and some way of collecting anything that needs to be drawn using a certain spriteBatch. Maybe make a manager class.
             // Tip: FrontToBack: 1f = Front, 0f = Back
-            _spriteBatch.Begin(transformMatrix: Camera.TransformationMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, sortMode: SpriteSortMode.FrontToBack);
+            _spriteBatch.Begin(transformMatrix: Camera.TransformationMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, sortMode: SpriteSortMode.Deferred);
             GraphicsDevice.SetRenderTargets(ScreenManager.RenderTarget);
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             _currentScene?.Draw(_spriteBatch);
-            
-
+            DebugManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
             DrawRenderTargetToScreen();
@@ -140,10 +124,19 @@ namespace MonoGame_Experiments
             _spriteBatch.Begin();
             _spriteBatch.DrawString(font, "Hello World!", Vector2.Zero, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 1f);
 
+            DebugConsole.Draw(_spriteBatch);
+
             Color deltaTimeTooHigh = (gameTime.ElapsedGameTime.TotalSeconds > TargetElapsedTime.TotalSeconds) ? Color.Red : Color.White;
             _spriteBatch.DrawString(font, "DeltaTime: " + gameTime.ElapsedGameTime.TotalSeconds, Vector2.UnitY * 24, deltaTimeTooHigh);
             _spriteBatch.DrawString(font, "FPS: " + gameTime.ElapsedGameTime.TotalSeconds / TargetElapsedTime.TotalSeconds * 60, Vector2.UnitY * 48, Color.White);
             _spriteBatch.End();
+        }
+
+        public static void ChangeScenes(Scene scene)
+        {
+            _currentScene?.Dispose();
+            GC.Collect();
+            _currentScene = scene;
         }
 
         private void OnWindowResize(object sender, EventArgs e)

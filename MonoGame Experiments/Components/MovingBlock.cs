@@ -21,9 +21,9 @@ namespace MonoGame_Experiments.Components
             base.Draw(spriteBatch);
         }
 
-        public override void Initialize(Entity baseObject)
+        public override void Awake()
         {
-            base.Initialize(baseObject);
+            base.Awake();
 
             _startPosition = Transform.Position;
         }

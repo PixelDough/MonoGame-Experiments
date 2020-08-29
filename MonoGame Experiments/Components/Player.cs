@@ -41,9 +41,9 @@ namespace MonoGame_Experiments.Components
 
         }
 
-        public override void Initialize(Entity baseObject)
+        public override void Awake()
         {
-            base.Initialize(baseObject);
+            base.Awake();
 
             Transform.OnMoveEvent += UpdateFollowCameraPosition;
 
@@ -121,7 +121,7 @@ namespace MonoGame_Experiments.Components
 
             _coyoteTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             _isGrounded = false;
-            if (Collider.CollideAt(Game._currentScene.Solids, Collider.Position + Vector2.UnitY, true))
+            if (Collider.CollideAt(Game._currentScene.Solids, Collider.Position + Vector2.UnitY))
             {
                 _coyoteTime = _coyoteTimeMax;
                 _isGrounded = true;
@@ -131,7 +131,7 @@ namespace MonoGame_Experiments.Components
 
         private void Jump()
         {
-            _velocity.Y = -4 + ((MathF.Sign(_positionCheck.Y - _positionLast.Y) * _previousSpeeds.Max()) / 1.5f);
+            _velocity.Y = -4 + ((MathF.Min(MathF.Sign(_positionCheck.Y - _positionLast.Y), 0) * _previousSpeeds.Max()) / 1.5f);
             _coyoteTime = 0f;
             _jumpBufferTime = 0f;
             _isGrounded = false;

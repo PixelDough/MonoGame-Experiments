@@ -18,6 +18,16 @@ namespace MonoGame_Experiments.Components
             _speed = speed;
         }
 
+        public override void Awake()
+        {
+            base.Awake();
+
+            if (Collider.CollideAt(Game._currentScene.Solids, Collider.Position))
+            {
+                Squish();
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -28,14 +38,6 @@ namespace MonoGame_Experiments.Components
             Collider.Update(gameTime);
             MoveX(_direction.X * _speed * (float)gameTime.ElapsedGameTime.TotalSeconds * 60, HitX);
             Collider.Update(gameTime);
-
-            if (pos == Collider.Position)
-            {
-                if (positionOld != pos)
-                    positionOld = pos;
-                else
-                    Squish();
-            }
         }
 
         private void HitX()

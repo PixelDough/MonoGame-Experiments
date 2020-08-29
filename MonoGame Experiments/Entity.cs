@@ -66,9 +66,14 @@ namespace MonoGame_Experiments
 
         public virtual void PreUpdate(GameTime gameTime)
         {
-            foreach (var componentToInitialize in _componentsToInitialize.ToArray())
+            foreach (var componentToInitialize in _componentsToInitialize)
             {
                 componentToInitialize.Initialize(this);
+                //_componentsToInitialize.Remove(componentToInitialize);
+            }
+            foreach (var componentToInitialize in _componentsToInitialize.ToArray())
+            {
+                componentToInitialize.Awake();
                 _componentsToInitialize.Remove(componentToInitialize);
             }
             foreach (Entity child in _children)
@@ -116,6 +121,7 @@ namespace MonoGame_Experiments
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
+            if (_destroyed) return;
             foreach (var component in _components)
             {
                 component.Draw(spriteBatch);

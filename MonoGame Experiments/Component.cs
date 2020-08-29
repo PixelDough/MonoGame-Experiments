@@ -21,6 +21,11 @@ namespace MonoGame_Experiments
             _entity = baseObject;
         }
 
+        public virtual void Awake()
+        {
+
+        }
+
         public int GetOwnerId()
         {
             return _entity.ID;

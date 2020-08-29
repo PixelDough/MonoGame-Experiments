@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame_Experiments.Components;
 using MonoGame_Experiments.Interfaces;
@@ -136,7 +137,7 @@ namespace MonoGame_Experiments
             }
         }
 
-        public bool CollideAt(List<IRigidbody> targets, Vector2 position, bool includeTilemap = false, OgmoTilemap tilemap = null)
+        public bool CollideAt(List<IRigidbody> targets, Vector2 position)
         {
             //float dist = Vector2.Distance(Position, position);
             Vector2 relativePos = position - Position;
@@ -201,8 +202,12 @@ namespace MonoGame_Experiments
         public override void Draw(SpriteBatch spriteBatch)
         {
 
-            if (Game.DebugMode)
-                spriteBatch.Draw(RectangleTexture, Position, null, DebugColor, 0f, Vector2.Zero, 1, SpriteEffects.None, 1f);
+            if (DebugManager.ShowCollisionRectangles)
+            {
+                DebugManager.DrawSprite(Position, RectangleTexture, DebugColor);
+                DebugManager.DrawText(Position, ContentHandler.Instance.Load<SpriteFont>("Fonts/m3x6"), Width + "x" + Height, Color.White);
+                //spriteBatch.Draw(RectangleTexture, Position, null, DebugColor, 0f, Vector2.Zero, 1, SpriteEffects.None, 1f);
+            }
         }
 
         public struct CollisionResult

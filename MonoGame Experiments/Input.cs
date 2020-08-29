@@ -19,6 +19,7 @@ namespace MonoGame_Experiments
 
         public static void Update(GameTime gameTime)
         {
+
             keyboardStateLast = keyboardState;
             keyboardState = Keyboard.GetState();
 

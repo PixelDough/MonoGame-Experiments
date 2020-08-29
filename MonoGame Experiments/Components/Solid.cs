@@ -24,12 +24,17 @@ namespace MonoGame_Experiments.Components
             SolidType = solidType;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Awake()
         {
+            base.Awake();
             if (!Game._currentScene.Solids.Contains(this))
             {
                 Game._currentScene.Solids.Add(this);
             }
+        }
+
+        public override void Update(GameTime gameTime)
+        {
             //float myDiagLengthSquared = (Collider.Width * Collider.Width) + (Collider.Height * Collider.Height);
 
             //_active = false;
