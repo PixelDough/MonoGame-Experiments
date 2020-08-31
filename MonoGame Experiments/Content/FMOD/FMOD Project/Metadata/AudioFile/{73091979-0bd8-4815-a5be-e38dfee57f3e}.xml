@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="AudioFile" id="{73091979-0bd8-4815-a5be-e38dfee57f3e}">
+		<property name="assetPath">
+			<value>PD_Logo_Jingle.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.1052607709750566</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{9b17a7c3-f381-4795-b3e8-0c8c3e413ab8}</destination>
+		</relationship>
+	</object>
+</objects>

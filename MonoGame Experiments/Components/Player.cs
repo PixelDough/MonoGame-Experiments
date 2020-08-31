@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ChaiFoxes.FMODAudio.Studio;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -36,12 +37,23 @@ namespace MonoGame_Experiments.Components
             }
         }
 
+        private EventDescription _jumpEventDescription;
+        private EventDescription _landEventDescription;
+        private Dictionary<string, EventInstance> _eventInstances = new Dictionary<string, EventInstance>();
+
         public Player(Entity entity) : base(entity)
         {
             Collider.LocalPosition = new Vector2(1, 3);
             Collider.Width = 14;
             Collider.Height = 13;
-            
+
+            _jumpEventDescription = AudioManager.LoadEvent("event:/SOUNDS/PLAYER/Jump");
+            _landEventDescription = AudioManager.LoadEvent("event:/SOUNDS/PLAYER/Land");
+            _jumpEventDescription.LoadSampleData();
+            _landEventDescription.LoadSampleData();
+            _eventInstances.Add("Jump", _jumpEventDescription.CreateInstance());
+            _eventInstances.Add("Land", _landEventDescription.CreateInstance());
+
             Texture2D texture = ContentHandler.Instance.Load<Texture2D>("Sprites/SlimeCube");
             entity.AddComponent(new Sprite(entity, texture, texture.Width, texture.Height, Vector2.Zero, .5f));
         }
@@ -91,7 +103,11 @@ namespace MonoGame_Experiments.Components
             if (_velocity.Y < 1 && _velocity.Y > -0.5f)
                 grav /= 2;
             _velocity.Y += grav;
-            if (_velocity.Y > 0) _velocity.Y += grav / 2;
+            if (_velocity.Y > 0)
+            {
+                _velocity.Y += grav / 2;
+                if (_eventInstances["Jump"].PlaybackState == FMOD.Studio.PLAYBACK_STATE.PLAYING) _eventInstances["Jump"].Stop();
+            }
 
             // TODO: Take the _jumpBufferTime out and into some sort of PlayerInput class, which would buffer this input action.
             _jumpBufferTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -119,18 +135,22 @@ namespace MonoGame_Experiments.Components
 
             Transform.Rotation += MathHelper.ToRadians(1);
 
-            MoveY(_velocity.Y * 60 * (float)gameTime.ElapsedGameTime.TotalSeconds, OnCollideY, 4);
+            bool isGrounded = _isGrounded;
+
+            MoveY(_velocity.Y * 60 * (float)gameTime.ElapsedGameTime.TotalSeconds, OnCollideY, 4 + (int)_velocity.X);
             Collider.Update(gameTime);
             MoveX(_velocity.X * 60 * (float)gameTime.ElapsedGameTime.TotalSeconds, OnCollideX);
             Collider.Update(gameTime);
 
             _coyoteTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             _isGrounded = false;
-            if (Collider.CollideAt(Game._currentScene.Solids, Collider.Position + Vector2.UnitY))
+            if (Collider.CollideAt(Game._currentScene.Solids, Collider.Position + Vector2.UnitY) && _velocity.Y >= 0)
             {
                 _coyoteTime = _coyoteTimeMax;
                 _isGrounded = true;
             }
+
+            if (_isGrounded && isGrounded == false) _eventInstances["Land"].Start();
 
         }
 
@@ -140,6 +160,8 @@ namespace MonoGame_Experiments.Components
             _coyoteTime = 0f;
             _jumpBufferTime = 0f;
             _isGrounded = false;
+
+            _eventInstances["Jump"].Start();
         }
 
         public void UpdateFollowCameraPosition()
@@ -166,6 +188,17 @@ namespace MonoGame_Experiments.Components
         private void OnCollideY()
         {
             _velocity.Y = 0;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            _jumpEventDescription.UnloadSampleData();
+            _landEventDescription.UnloadSampleData();
+
+            foreach (var pair in _eventInstances)
+                pair.Value.Dispose();
         }
 
     }

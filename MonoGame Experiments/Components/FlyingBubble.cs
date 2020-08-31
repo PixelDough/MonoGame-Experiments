@@ -13,6 +13,7 @@ namespace MonoGame_Experiments.Components
 
         private Vector2 positionOld = Vector2.Zero;
 
+        public FlyingBubble(Entity entity) : this(entity, Vector2.One, 1) { }
         public FlyingBubble(Entity entity, Vector2 direction, float speed) : base(entity)
         {
             _direction = direction;

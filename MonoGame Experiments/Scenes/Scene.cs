@@ -39,9 +39,16 @@ namespace MonoGame_Experiments.Scenes
             foreach (Entity gameObject in gameObjects)
                 gameObject.Draw(spriteBatch);
         }
-        public virtual void DebugDraw(SpriteBatch spriteBatch) 
-        { 
+        public virtual void DebugDraw(SpriteBatch spriteBatch)
+        {
 
+        }
+
+        public virtual Entity AddEntity(Vector2 position)
+        {
+            Entity entity = new Entity(position);
+            gameObjects.Add(entity);
+            return entity;
         }
 
         protected virtual void Dispose(bool disposing)

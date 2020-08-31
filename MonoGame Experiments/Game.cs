@@ -1,16 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ChaiFoxes.FMODAudio;
+using ChaiFoxes.FMODAudio.Studio;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame_Experiments.Components;
 using MonoGame_Experiments.Scenes;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Threading;
 
 namespace MonoGame_Experiments
 {
@@ -44,13 +40,16 @@ namespace MonoGame_Experiments
 
         protected override void Initialize()
         {
-            
+            FMODManager.Init(FMODMode.CoreAndStudio, "Content/FMOD/FMOD Project");
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+            AudioManager.LoadBank("Master.bank");
+            AudioManager.LoadBank("Master.strings.bank");
+
             _spriteBatch?.Dispose();
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -65,6 +64,8 @@ namespace MonoGame_Experiments
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            FMODManager.Update();
 
             Input.Update(gameTime);
 
@@ -110,7 +111,25 @@ namespace MonoGame_Experiments
             //partRectangle.Height = (int)MathF.Round(Camera.Viewport.Height / Camera.Zoom);
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             GraphicsDevice.SetRenderTargets(null);
-            _spriteBatch.Draw(ScreenManager.RenderTarget, ScreenManager.RenderRectangle, Color.White);
+            //_spriteBatch.Draw(ScreenManager.RenderTarget, ScreenManager.RenderRectangle, Color.White);
+
+            Rectangle rect = ScreenManager.RenderRectangle;
+            float RATIO = (float)rect.Height / rect.Width;
+
+            //if (Window.ClientBounds.Width > Window.ClientBounds.Height)
+            //{
+            //    rect.Y = 0;
+            //    rect.Height = Window.ClientBounds.Height;
+            //    rect.Width = (int)MathF.Round(rect.Height * (1f / RATIO));
+            //}
+            //else
+            //{
+            //    rect.X = 0;
+            //    rect.Width = Window.ClientBounds.Width;
+            //    rect.Height = (int)MathF.Round(rect.Width * RATIO);
+            //}
+
+            _spriteBatch.Draw(ScreenManager.RenderTarget, rect, Color.White);
             _spriteBatch.End();
         }
 
